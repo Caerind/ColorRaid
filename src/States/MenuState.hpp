@@ -6,6 +6,7 @@
 #include "States.hpp"
 
 #include <SFML/Graphics/Sprite.hpp>
+#include <SFGUI/Widgets.hpp>
 
 #include "../Game.hpp"
 
@@ -23,6 +24,7 @@ class MenuState : public ah::State
         void onDeactivate();
 
     private:
+        sfg::Desktop mDesktop;
 
         sf::Sprite mBackground;
         sf::Text mTitleText;

@@ -33,6 +33,8 @@ int main()
 
     ah::Application::getAudio().playMusic("assets/Musics/theme.ogg");
 
+    Game::instance();
+
     ah::Application::run();
 
     return 0;

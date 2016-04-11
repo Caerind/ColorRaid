@@ -16,6 +16,11 @@ std::string Game::getTitle()
     return "Test";
 }
 
+void Game::drawGui(sf::RenderWindow& window)
+{
+    instance().mSfgui.Display(window);
+}
+
 Game::Game()
 {
 }
