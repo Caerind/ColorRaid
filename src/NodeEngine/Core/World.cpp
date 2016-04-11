@@ -29,6 +29,7 @@ bool NWorld::testEvent(sf::Event const& event)
     return false;
 }*/
 
+/*
 bool NWorld::testAction(NAction const& action)
 {
     for (std::size_t i = 0; i < instance().mEvents.size(); i++)
@@ -39,7 +40,7 @@ bool NWorld::testAction(NAction const& action)
         }
     }
     return false;
-}
+}*/
 
 void NWorld::tick(sf::Time dt)
 {

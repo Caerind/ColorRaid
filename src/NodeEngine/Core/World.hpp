@@ -7,7 +7,6 @@
 #include "CameraManager.hpp"
 #include "Tickable.hpp"
 #include "Actor.hpp"
-#include "Action.hpp"
 #include "SceneComponent.hpp"
 
 #include "../Utils/Array.hpp"
@@ -28,7 +27,7 @@ class NWorld
 
         // Test if an event exist
         //static bool testEvent(sf::Event const& event);
-        static bool testAction(NAction const& action);
+        //static bool testAction(NAction const& action);
 
         // Tick the world
         static void tick(sf::Time dt);

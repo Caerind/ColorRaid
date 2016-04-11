@@ -7,3 +7,4 @@ obj*
 *.depend
 *~
 *.workspace
+temp/

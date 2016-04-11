@@ -129,9 +129,8 @@ SettingsState::SettingsState(ah::StateManager& manager)
     box->Pack(frameG);
     // End Graphics
 
-    /*
     // Begin Key Binding
-    mKeyLeft = sfg::Button::Create(NAction::keyToString(Game::getActionKey("left")));
+    mKeyLeft = sfg::Button::Create(thor::toString(Game::getActionKey("1")));
     mKeyLeft->GetSignal(sfg::Widget::OnLeftClick).Connect([&]()
     {
         mKeySelected = 1;
@@ -140,7 +139,7 @@ SettingsState::SettingsState(ah::StateManager& manager)
     h7->Pack(sfg::Label::Create("Left"));
     h7->Pack(mKeyLeft);
 
-    mKeyRight = sfg::Button::Create(NAction::keyToString(Game::getActionKey("right")));
+    mKeyRight = sfg::Button::Create(thor::toString(Game::getActionKey("2")));
     mKeyRight->GetSignal(sfg::Widget::OnLeftClick).Connect([&]()
     {
         mKeySelected = 2;
@@ -158,7 +157,6 @@ SettingsState::SettingsState(ah::StateManager& manager)
     frameB->SetAlignment(sf::Vector2f(0.1f,0.f));
 
     box->Pack(frameB);
-    */
     // End Key Binding
 
 
@@ -214,14 +212,14 @@ bool SettingsState::handleEvent(sf::Event const& event)
         {
             case 1:
             {
-                //Game::setActionKey("left",event.key.code);
-                mKeyLeft->SetLabel(NAction::keyToString(event.key.code));
+                Game::setActionKey("1",event.key.code);
+                mKeyLeft->SetLabel(thor::toString(event.key.code));
             } break;
 
             case 2:
             {
-                //Game::setActionKey("right",event.key.code);
-                mKeyRight->SetLabel(NAction::keyToString(event.key.code));
+                Game::setActionKey("2",event.key.code);
+                mKeyRight->SetLabel(thor::toString(event.key.code));
             } break;
 
             default: break;
