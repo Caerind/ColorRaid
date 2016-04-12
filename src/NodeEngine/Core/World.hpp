@@ -8,6 +8,7 @@
 #include "Tickable.hpp"
 #include "Actor.hpp"
 #include "SceneComponent.hpp"
+#include "ParticleSystem.hpp"
 
 #include "../Utils/Array.hpp"
 #include "../Utils/Map.hpp"
@@ -87,6 +88,10 @@ class NWorld
         void addTickable(NTickable* tickable);
         void removeTickable(NTickable* tickable);
 
+        static NParticleSystem& addParticleSystem(std::string const& systemId);
+        static thor::ParticleSystem* getParticleSystem(std::string const& systemId);
+        static std::size_t getParticleSystemCount();
+
     private:
         NWorld();
         ~NWorld();
@@ -94,6 +99,8 @@ class NWorld
         static NWorld* mInstance;
 
     private:
+        NArray<NParticleSystem> mParticleSystems;
+
         NArray<sf::Event> mEvents;
 
         NArray<NActor::Ptr> mActors;

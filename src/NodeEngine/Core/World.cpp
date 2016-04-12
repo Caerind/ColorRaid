@@ -299,6 +299,31 @@ void NWorld::removeTickable(NTickable* tickable)
     mTickablesDeletions.add(tickable);
 }
 
+NParticleSystem& NWorld::addParticleSystem(std::string const& systemId)
+{
+    instance().mParticleSystems.emplace_back();
+    instance().mParticleSystems.back().setId(systemId);
+    return instance().mParticleSystems.back();
+}
+
+thor::ParticleSystem* NWorld::getParticleSystem(std::string const& systemId)
+{
+    std::size_t s = instance().mParticleSystems.size();
+    for (std::size_t i = 0; i < s; i++)
+    {
+        if (instance().mParticleSystems[i].getId() == systemId)
+        {
+            return &(instance().mParticleSystems[i].getSystem());
+        }
+    }
+    return nullptr;
+}
+
+std::size_t NWorld::getParticleSystemCount()
+{
+    return instance().mParticleSystems.size();
+}
+
 NWorld::NWorld()
 {
 }

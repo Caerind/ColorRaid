@@ -10,6 +10,7 @@ int main()
     ah::Application::getResources().loadTexture("back","assets/Textures/back.png");
     ah::Application::getResources().loadTexture("cursor","assets/Textures/cursor.png");
     ah::Application::getResources().loadTexture("icon","assets/Textures/icon.png");
+    ah::Application::getResources().loadTexture("particle","assets/Textures/particle.png");
     ah::Application::getResources().loadFont("atmog","assets/Fonts/atmog.ttf");
     ah::Application::getResources().loadFont("cool","assets/Fonts/coolveticca.ttf");
     ah::Application::getResources().loadSoundBuffer("jingle","assets/Sounds/jingleAtmog.wav");
