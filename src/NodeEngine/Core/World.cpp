@@ -106,6 +106,20 @@ void NWorld::update()
     instance().mTickablesDeletions.clear();
 }
 
+void NWorld::clear()
+{
+    instance().mParticleSystems.clear();
+    instance().mEvents.clear();
+    instance().mActors.clear();
+    instance().mActorsDeletions.clear();
+    instance().mRenderables.clear();
+    instance().mRenderablesDeletions.clear();
+    instance().mTickables.clear();
+    instance().mTickablesDeletions.clear();
+    instance().mTimers.clear();
+    instance().mCameraManager.clear();
+}
+
 NActor::Ptr NWorld::getActor(std::size_t index)
 {
     if (index >= 0 && index < instance().mActors.size())

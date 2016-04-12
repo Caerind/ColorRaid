@@ -17,6 +17,8 @@ class NCameraManager
 
         sf::View& getActiveView();
 
+        void clear();
+
     protected:
         NArray<NCameraComponent*> mCameras;
         sf::View mView;

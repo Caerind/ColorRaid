@@ -41,3 +41,10 @@ sf::View& NCameraManager::getActiveView()
     }
     return mView;
 }
+
+void NCameraManager::clear()
+{
+    mCameras.clear();
+    mActive = -1;
+    mView = NWorld::getWindow().getView();
+}

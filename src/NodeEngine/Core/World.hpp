@@ -39,6 +39,9 @@ class NWorld
         // Update the world : use temp array and then clear them
         static void update();
 
+        // Remove All
+        static void clear();
+
         #ifdef N_DESKTOP_PLATFORM
         template <typename T>
         static bool registerActor();

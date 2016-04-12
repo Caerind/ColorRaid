@@ -3,10 +3,13 @@
 IntroState::IntroState(ah::StateManager& manager)
 : ah::State(manager)
 {
+    mDuration = sf::seconds(2.f);
+
     sf::Vector2u wSize = ah::Application::getWindow().getSize();
     sf::Vector2f scale = sf::Vector2f(wSize.x/800.f,wSize.y/600.f);
 
     mBackground.setScale(scale);
+    mBackground.setTexture(ah::Application::getResources().getTexture("splash"));
 
     mAtmogText.setFont(ah::Application::getResources().getFont("atmog"));
     mAtmogText.setString(L"Atmög");
@@ -19,6 +22,13 @@ IntroState::IntroState(ah::StateManager& manager)
     mAtmogShadow.setCharacterSize(mAtmogText.getCharacterSize());
     mAtmogShadow.setPosition(mAtmogText.getPosition() + sf::Vector2f(2.f * scale.x, 2.f * scale.y));
     mAtmogShadow.setColor(sf::Color::Black);
+
+    thor::FrameAnimation animation;
+    animation.addFrame(1.f,sf::IntRect(0,0,800,600));
+    animation.addFrame(1.f,sf::IntRect(800,0,800,600));
+    animation.addFrame(1.f,sf::IntRect(1600,0,800,600));
+    mAnimator.addAnimation("1", animation, mDuration);
+    mAnimator.playAnimation("1");
 }
 
 IntroState::~IntroState()
@@ -32,23 +42,13 @@ bool IntroState::handleEvent(sf::Event const& event)
 
 bool IntroState::update(sf::Time dt)
 {
-    if (mClock.getElapsedTime() <= sf::seconds(1.f))
-    {
-        mBackground.setTexture(ah::Application::getResources().getTexture("ld"));
-    }
-    else if (mClock.getElapsedTime() <= sf::seconds(2.f))
-    {
-        mBackground.setTexture(ah::Application::getResources().getTexture("libs"));
-    }
-    else if (mClock.getElapsedTime() <= sf::seconds(3.f))
-    {
-        mBackground.setTexture(ah::Application::getResources().getTexture("back"));
-    }
-    else
+    if (mClock.getElapsedTime() >= mDuration)
     {
         requestClear();
         requestPush("MenuState");
     }
+    mAnimator.update(dt);
+    mAnimator.animate(mBackground);
     return true;
 }
 
@@ -56,7 +56,7 @@ void IntroState::render(sf::RenderTarget& target, sf::RenderStates states)
 {
     states.transform *= getTransform();
     target.draw(mBackground,states);
-    if (mClock.getElapsedTime() >= sf::seconds(2.f) && mClock.getElapsedTime() <= sf::seconds(3.f))
+    if (mClock.getElapsedTime().asSeconds() >= mDuration.asSeconds() * 2 / 3)
     {
         target.draw(mAtmogShadow,states);
         target.draw(mAtmogText,states);
