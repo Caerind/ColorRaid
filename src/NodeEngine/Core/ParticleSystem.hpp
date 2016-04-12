@@ -5,8 +5,11 @@
 
 #include <Thor/Particles.hpp>
 
-class NParticleSystem : public NSceneComponent
+class NParticleSystem : public NSceneComponent, public thor::ParticleSystem
 {
+    public:
+        typedef std::shared_ptr<NParticleSystem> Ptr;
+
     public:
         NParticleSystem();
 
@@ -14,16 +17,12 @@ class NParticleSystem : public NSceneComponent
         void setId(std::string const& id);
 
         void setTexture(std::string const& id);
-        void setTexture(sf::Texture& texture);
 
-        void tick(sf::Time dt);
-        void render(sf::RenderTarget& target);
-
-        thor::ParticleSystem& getSystem();
+        virtual void tick(sf::Time dt);
+        virtual void render(sf::RenderTarget& target);
 
     protected:
         std::string mId;
-        thor::ParticleSystem mSystem;
 };
 
 #endif // NPARTICLESYSTEM_HPP

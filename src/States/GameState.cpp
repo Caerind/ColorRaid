@@ -1,13 +1,39 @@
 #include "GameState.hpp"
 #include "../NodeEngine/Core/World.hpp"
-#include "../ParticleTestor.hpp"
 #include <iostream>
+
+#include <Thor/Graphics.hpp>
+#include <Thor/Animations.hpp>
 
 GameState::GameState(ah::StateManager& manager)
 : ah::State(manager)
 {
-    NParticleSystem& pSys = NWorld::addParticleSystem("test1");
-    pSys.setTexture("particle");
+    NParticleSystem::Ptr pSys1 = NWorld::addParticleSystem("test1");
+    pSys1->setTexture("particle");
+    pSys1->setPosition(0,0,0);
+
+    NParticleSystem::Ptr pSys2 = NWorld::addParticleSystem("test2");
+    pSys2->setTexture("particle");
+    pSys2->setPosition(0,0,-20);
+    pSys2->addAffector(thor::ForceAffector(sf::Vector2f(0.f,100.f)));
+	pSys2->addAffector(thor::TorqueAffector(100.f));
+
+	// Build color gradient (green -> teal -> blue)
+	thor::ColorGradient gradient;
+	gradient[0.f] = sf::Color(0, 150, 0);
+	gradient[0.5f] = sf::Color(0, 150, 100);
+	gradient[1.f] = sf::Color(0, 0, 150);
+
+	// Create color and fade in/out animations
+	thor::ColorAnimation colorizer(gradient);
+	thor::FadeAnimation fader(0.1f, 0.1f);
+
+	// Add particle affectors
+	pSys2->addAffector(thor::AnimationAffector(colorizer));
+	pSys2->addAffector(thor::AnimationAffector(fader));
+
+    mPlayer = NWorld::createActor<ParticleTestor>();
+    mPlayer->setPosition(NWorld::getActiveView().getCenter());
 }
 
 GameState::~GameState()
@@ -24,8 +50,6 @@ bool GameState::handleEvent(sf::Event const& event)
 
     if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)
     {
-        ParticleTestor::Ptr p = NWorld::createActor<ParticleTestor>();
-        p->setPosition(NWorld::getPointerPositionView());
     }
 
     return true;
@@ -33,6 +57,17 @@ bool GameState::handleEvent(sf::Event const& event)
 
 bool GameState::update(sf::Time dt)
 {
+    NWorld::tick(dt);
+
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
+    {
+        mPlayer->setParticleAngle(-200 * dt.asSeconds());
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+    {
+        mPlayer->setParticleAngle(200 * dt.asSeconds());
+    }
+
     NWorld::getWindow().setDebugInfo("Actors",std::to_string(NWorld::getActorCount()));
     NWorld::getWindow().setDebugInfo("Tickables",std::to_string(NWorld::getTickableCount()));
     NWorld::getWindow().setDebugInfo("Renderables",std::to_string(NWorld::getRenderableCount()));
@@ -42,7 +77,7 @@ bool GameState::update(sf::Time dt)
 
 void GameState::render(sf::RenderTarget& target, sf::RenderStates states)
 {
-    states.transform *= getTransform();
+    NWorld::render(target);
 }
 
 void GameState::onActivate()

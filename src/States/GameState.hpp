@@ -5,6 +5,8 @@
 #include "../NodeEngine/Application/State.hpp"
 #include "States.hpp"
 
+#include "../ParticleTestor.hpp"
+
 class GameState : public ah::State
 {
     public:
@@ -17,6 +19,9 @@ class GameState : public ah::State
 
         void onActivate();
         void onDeactivate();
+
+    private:
+        ParticleTestor::Ptr mPlayer;
 };
 
 #endif // GAMESTATE_HPP

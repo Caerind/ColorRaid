@@ -30,7 +30,7 @@ sf::View& NCameraManager::getView()
     return mView;
 }
 
-sf::View NCameraManager::getActiveView() const
+sf::View& NCameraManager::getActiveView()
 {
     if (mActive >= 0 && mActive < (int)mCameras.size())
     {

@@ -99,11 +99,6 @@ void NWorld::update()
     instance().mRenderablesDeletions.clear();
 
     // Tickables
-    for (std::size_t i = 0; i < instance().mTickablesAdditions.size(); i++)
-    {
-        instance().mTickables.add(instance().mTickablesAdditions[i]);
-    }
-    instance().mTickablesAdditions.clear();
     for (std::size_t i = 0; i < instance().mTickablesDeletions.size(); i++)
     {
         instance().mTickables.remove(instance().mTickablesDeletions[i]);
@@ -171,11 +166,6 @@ bool NWorld::load(std::string const& filename)
     return true;
 }
 
-void NWorld::addActor(NActor::Ptr actor)
-{
-    instance().mActors.add(actor);
-}
-
 bool NWorld::save(std::string const& filename)
 {
     pugi::xml_document doc;
@@ -203,6 +193,11 @@ NCameraManager& NWorld::getCameraManager()
     return instance().mCameraManager;
 }
 
+sf::View& NWorld::getActiveView()
+{
+    return instance().mCameraManager.getActiveView();
+}
+
 std::size_t NWorld::getActorCount()
 {
     return instance().mActors.size();
@@ -225,7 +220,7 @@ NVector NWorld::getPointerPositionScreen(int touchIndex)
 
 NVector NWorld::getPointerPositionView(int touchIndex)
 {
-    return NVector::SFML2FToN(getWindow().getPointerPositionView(instance().mCameraManager.getActiveView(),touchIndex));
+    return NVector::SFML2FToN(getWindow().getPointerPositionView(instance().getActiveView(),touchIndex));
 }
 
 ah::ResourceManager& NWorld::getResources()
@@ -281,7 +276,7 @@ void NWorld::stopTimer(std::string const& handle)
 
 void NWorld::addRenderable(NSceneComponent* renderable)
 {
-    instance().mRenderables.add(renderable);
+    mRenderables.add(renderable);
 }
 
 void NWorld::removeRenderable(NSceneComponent* renderable)
@@ -291,7 +286,7 @@ void NWorld::removeRenderable(NSceneComponent* renderable)
 
 void NWorld::addTickable(NTickable* tickable)
 {
-    mTickablesAdditions.add(tickable);
+    mTickables.add(tickable);
 }
 
 void NWorld::removeTickable(NTickable* tickable)
@@ -299,21 +294,21 @@ void NWorld::removeTickable(NTickable* tickable)
     mTickablesDeletions.add(tickable);
 }
 
-NParticleSystem& NWorld::addParticleSystem(std::string const& systemId)
+NParticleSystem::Ptr NWorld::addParticleSystem(std::string const& systemId)
 {
-    instance().mParticleSystems.emplace_back();
-    instance().mParticleSystems.back().setId(systemId);
+    instance().mParticleSystems.emplace_back(std::make_shared<NParticleSystem>());
+    instance().mParticleSystems.back()->setId(systemId);
     return instance().mParticleSystems.back();
 }
 
-thor::ParticleSystem* NWorld::getParticleSystem(std::string const& systemId)
+NParticleSystem::Ptr NWorld::getParticleSystem(std::string const& systemId)
 {
     std::size_t s = instance().mParticleSystems.size();
     for (std::size_t i = 0; i < s; i++)
     {
-        if (instance().mParticleSystems[i].getId() == systemId)
+        if (instance().mParticleSystems[i]->getId() == systemId)
         {
-            return &(instance().mParticleSystems[i].getSystem());
+            return instance().mParticleSystems[i];
         }
     }
     return nullptr;

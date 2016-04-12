@@ -27,6 +27,10 @@ class NTransformable
 
         virtual sf::Transform getTransform() const;
 
+        virtual void onMoved();
+        virtual void onScaled();
+        virtual void onRotated();
+
     private:
         sf::Transformable mTransformable;
         float mZ;

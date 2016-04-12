@@ -12,15 +12,10 @@ NParticleComponent::~NParticleComponent()
 
 void NParticleComponent::connectToSystem(std::string const& systemId)
 {
-    thor::ParticleSystem* system = NWorld::getParticleSystem(systemId);
+    NParticleSystem::Ptr system = NWorld::getParticleSystem(systemId);
     if (system != nullptr)
     {
         mConnection = system->addEmitter(thor::refEmitter(*this));
-        std::cout << "success" << std::endl;
-    }
-    else
-    {
-        std::cout << "failed" << std::endl;
     }
 }
 

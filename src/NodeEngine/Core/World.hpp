@@ -50,9 +50,6 @@ class NWorld
         template <typename T, typename ... Args>
         static std::shared_ptr<T> createActor(Args&& ... args);
 
-        // Add an actor
-        static void addActor(NActor::Ptr actor);
-
         // Get an actor
         static NActor::Ptr getActor(std::size_t index);
         static NActor::Ptr getActor(std::string const& id);
@@ -65,6 +62,7 @@ class NWorld
 
         // CameraManager
         static NCameraManager& getCameraManager();
+        static sf::View& getActiveView();
 
         static std::size_t getActorCount();
         static std::size_t getRenderableCount();
@@ -88,8 +86,8 @@ class NWorld
         void addTickable(NTickable* tickable);
         void removeTickable(NTickable* tickable);
 
-        static NParticleSystem& addParticleSystem(std::string const& systemId);
-        static thor::ParticleSystem* getParticleSystem(std::string const& systemId);
+        static NParticleSystem::Ptr addParticleSystem(std::string const& systemId);
+        static NParticleSystem::Ptr getParticleSystem(std::string const& systemId);
         static std::size_t getParticleSystemCount();
 
     private:
@@ -99,7 +97,7 @@ class NWorld
         static NWorld* mInstance;
 
     private:
-        NArray<NParticleSystem> mParticleSystems;
+        NArray<NParticleSystem::Ptr> mParticleSystems;
 
         NArray<sf::Event> mEvents;
 
@@ -110,7 +108,6 @@ class NWorld
         NArray<NSceneComponent*> mRenderablesDeletions;
 
         NArray<NTickable*> mTickables;
-        NArray<NTickable*> mTickablesAdditions;
         NArray<NTickable*> mTickablesDeletions;
 
         NMap<std::string,NTimer> mTimers;
