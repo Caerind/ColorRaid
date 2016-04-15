@@ -65,11 +65,11 @@ bool GameState::update(sf::Time dt)
 {
     NWorld::tick(dt);
 
-    if (sf::Keyboard::isKeyPressed(Game::getActionKey("1")))
+    if (sf::Keyboard::isKeyPressed(Game::getKeyBinding().getKey("1")))
     {
         mPlayer->setParticleAngle(-200 * dt.asSeconds());
     }
-    if (sf::Keyboard::isKeyPressed(Game::getActionKey("2")))
+    if (sf::Keyboard::isKeyPressed(Game::getKeyBinding().getKey("2")))
     {
         mPlayer->setParticleAngle(200 * dt.asSeconds());
     }

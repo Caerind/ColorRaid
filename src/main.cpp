@@ -33,7 +33,8 @@ int main()
 
     ah::Application::getAudio().playMusic("assets/Musics/theme.ogg",true);
 
-    Game::instance();
+    Game::getKeyBinding().setAction("1",sf::Keyboard::Q,thor::Action::Hold);
+    Game::getKeyBinding().setAction("2",sf::Keyboard::D,thor::Action::Hold);
 
     ah::Application::run();
 

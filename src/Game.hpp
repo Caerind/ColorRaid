@@ -8,7 +8,8 @@
 
 #include <SFML/System/Clock.hpp>
 #include <SFGUI/SFGUI.hpp>
-#include <Thor/Input.hpp>
+
+#include "NodeEngine/Utils/KeyBinding.hpp"
 
 class Game
 {
@@ -18,31 +19,27 @@ class Game
         static Game& instance();
 
         static std::string getTitle();
+        static std::string getConfigFile();
 
         static void drawGui(sf::RenderWindow& window);
 
-        static void setActionKey(std::string const& id, sf::Keyboard::Key key);
-        static sf::Keyboard::Key getActionKey(std::string const& id);
-        static ActionMapPtr getActionMap();
+        static lp::KeyBinding& getKeyBinding();
 
         static sf::Time getGameDuration();
         static void resetGameDuration();
+
+		static bool load(std::string const& filename);
+		static void save(std::string const& filename);
 
     private:
         Game();
         ~Game();
 
-		bool load();
-		void save();
-
         static Game* mInstance;
-
-
 
         sfg::SFGUI mSfgui;
 
-        ActionMapPtr mActionMap;
-        std::map<std::string,std::pair<sf::Keyboard::Key,bool>> mKeys;
+        lp::KeyBinding mKeys;
 
         sf::Clock mGameDuration;
 };

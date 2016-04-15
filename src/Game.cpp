@@ -16,25 +16,19 @@ std::string Game::getTitle()
     return "Test";
 }
 
+std::string Game::getConfigFile()
+{
+    return "assets/Data/settings.xml";
+}
+
 void Game::drawGui(sf::RenderWindow& window)
 {
     instance().mSfgui.Display(window);
 }
 
-void Game::setActionKey(std::string const& id, sf::Keyboard::Key key)
+lp::KeyBinding& Game::getKeyBinding()
 {
-    instance().mKeys[id].first = key;
-    (*instance().mActionMap)[id] = thor::Action(instance().mKeys[id].first,(instance().mKeys[id].second) ? thor::Action::Hold : thor::Action::PressOnce);
-}
-
-sf::Keyboard::Key Game::getActionKey(std::string const& id)
-{
-    return instance().mKeys[id].first;
-}
-
-Game::ActionMapPtr Game::getActionMap()
-{
-    return instance().mActionMap;
+    return instance().mKeys;
 }
 
 sf::Time Game::getGameDuration()
@@ -49,31 +43,17 @@ void Game::resetGameDuration()
 
 Game::Game()
 {
-    mActionMap = std::make_shared<thor::ActionMap<std::string>>();
-
-    if (!load())
-    {
-        mKeys["1"].first = sf::Keyboard::Num1;
-        mKeys["2"].first = sf::Keyboard::Num2;
-    }
-
-    for (auto itr = mKeys.begin(); itr != mKeys.end(); itr++)
-    {
-        (*mActionMap)[itr->first] = thor::Action(itr->second.first,(itr->second.second) ? thor::Action::Hold : thor::Action::PressOnce);
-    }
-
 }
 
 Game::~Game()
 {
-    save();
 }
 
-bool Game::load()
+bool Game::load(std::string const& filename)
 {
     return false;
 }
 
-void Game::save()
+void Game::save(std::string const& filename)
 {
 }
