@@ -1,4 +1,5 @@
 #include "World.hpp"
+#include <SFML/Graphics/RenderTexture.hpp>
 
 NWorld* NWorld::mInstance = nullptr;
 
@@ -55,7 +56,7 @@ void NWorld::tick(sf::Time dt)
     }
 }
 
-void NWorld::render(sf::RenderTarget& target)
+void NWorld::render()
 {
     instance().mRenderables.sort([](NSceneComponent* a, NSceneComponent* b) -> bool
     {
@@ -77,13 +78,27 @@ void NWorld::render(sf::RenderTarget& target)
        return true;
     });
 
-    sf::View old = target.getView();
-    target.setView(instance().mCameraManager.getActiveView());
-    for (auto itr = instance().mRenderables.begin(); itr != instance().mRenderables.end(); itr++)
+    if (instance().mEffect != nullptr)
     {
-        (*itr)->render(target);
+        sf::View old = instance().mSceneTexture.getView();
+        instance().mSceneTexture.setView(instance().mCameraManager.getActiveView());
+        for (auto itr = instance().mRenderables.begin(); itr != instance().mRenderables.end(); itr++)
+        {
+            (*itr)->render(instance().mSceneTexture);
+        }
+        instance().mSceneTexture.setView(old);
+        instance().mEffect->apply(instance().mSceneTexture,getWindow());
     }
-    target.setView(old);
+    else
+    {
+        sf::View old = getWindow().getView();
+        getWindow().setView(instance().mCameraManager.getActiveView());
+        for (auto itr = instance().mRenderables.begin(); itr != instance().mRenderables.end(); itr++)
+        {
+            (*itr)->render(getWindow());
+        }
+        getWindow().setView(old);
+    }
 }
 
 void NWorld::update()
@@ -118,6 +133,12 @@ void NWorld::clear()
     instance().mTickablesDeletions.clear();
     instance().mTimers.clear();
     instance().mCameraManager.clear();
+    instance().mSceneTexture.create(getWindow().getSize().x, getWindow().getSize().y);
+    if (instance().mEffect != nullptr)
+    {
+        delete instance().mEffect;
+        instance().mEffect = nullptr;
+    }
 }
 
 NActor::Ptr NWorld::getActor(std::size_t index)
@@ -331,6 +352,15 @@ NParticleSystem::Ptr NWorld::getParticleSystem(std::string const& systemId)
 std::size_t NWorld::getParticleSystemCount()
 {
     return instance().mParticleSystems.size();
+}
+
+void NWorld::setEffect(NEffect* effect)
+{
+    if (NEffect::isSupported())
+    {
+        instance().mEffect = effect;
+        std::cout << "Effect supported" << std::endl;
+    }
 }
 
 NWorld::NWorld()

@@ -21,14 +21,12 @@ ParticleTestor::ParticleTestor()
     mComponent2.setParticleColor(sf::Color::Green);
     mComponent2.connectToSystem("test2");
 
+    mComponent.setPosition(30,30,0);
+    mComponent.setTexture("icon");
+
     attachComponent(&mComponent1);
     attachComponent(&mComponent2);
-}
-
-void ParticleTestor::onMoved()
-{
-    mComponent1.setParticlePosition(NVector::NToSFML2F(mComponent1.getFinalPosition()));
-    mComponent2.setParticlePosition(NVector::NToSFML2F(mComponent2.getFinalPosition()));
+    attachComponent(&mComponent);
 }
 
 void ParticleTestor::setParticleAngle(float angle)

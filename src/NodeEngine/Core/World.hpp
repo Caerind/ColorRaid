@@ -2,6 +2,7 @@
 #define NWORLD_HPP
 
 #include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/Graphics/RenderTexture.hpp>
 #include <SFML/Window/Event.hpp>
 
 #include "CameraManager.hpp"
@@ -9,6 +10,7 @@
 #include "Actor.hpp"
 #include "SceneComponent.hpp"
 #include "ParticleSystem.hpp"
+#include "Effect.hpp"
 
 #include "../Utils/Array.hpp"
 #include "../Utils/Map.hpp"
@@ -34,7 +36,7 @@ class NWorld
         static void tick(sf::Time dt);
 
         // Render the world
-        static void render(sf::RenderTarget& target);
+        static void render();
 
         // Update the world : use temp array and then clear them
         static void update();
@@ -93,6 +95,8 @@ class NWorld
         static NParticleSystem::Ptr getParticleSystem(std::string const& systemId);
         static std::size_t getParticleSystemCount();
 
+        static void setEffect(NEffect* effect);
+
     private:
         NWorld();
         ~NWorld();
@@ -118,6 +122,9 @@ class NWorld
         NCameraManager mCameraManager;
 
         NMap<std::string,std::function<NActor::Ptr()>> mActorFactory;
+
+        sf::RenderTexture mSceneTexture;
+        NEffect* mEffect;
 };
 
 template <typename T, typename ... Args>

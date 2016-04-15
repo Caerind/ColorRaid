@@ -17,7 +17,7 @@ sf::View& NCameraComponent::getView()
     return mView;
 }
 
-void NCameraComponent::onMoved()
+void NCameraComponent::onMovedThis()
 {
     mView.setCenter(NVector::NToSFML2F(getFinalPosition()));
 }

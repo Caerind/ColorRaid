@@ -3,7 +3,7 @@
 IntroState::IntroState(ah::StateManager& manager)
 : ah::State(manager)
 {
-    mDuration = sf::seconds(2.f);
+    mDuration = sf::seconds(0.1f);
 
     sf::Vector2u wSize = ah::Application::getWindow().getSize();
     sf::Vector2f scale = sf::Vector2f(wSize.x/800.f,wSize.y/600.f);

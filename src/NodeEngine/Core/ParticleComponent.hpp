@@ -15,6 +15,8 @@ class NParticleComponent : public NComponent, public thor::UniversalEmitter
         bool isConnected() const;
         void disconnect();
 
+        void onMovedThis();
+
     protected:
         thor::Connection mConnection;
 };

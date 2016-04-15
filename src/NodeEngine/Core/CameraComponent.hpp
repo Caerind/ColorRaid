@@ -12,7 +12,7 @@ class NCameraComponent : public NComponent
 
         sf::View& getView();
 
-        void onMoved();
+        void onMovedThis();
 
     private:
         sf::View mView;

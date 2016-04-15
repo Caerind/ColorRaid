@@ -13,6 +13,7 @@ int main()
     ah::Application::getResources().loadFont("atmog","assets/Fonts/atmog.ttf");
     ah::Application::getResources().loadFont("cool","assets/Fonts/coolveticca.ttf");
     ah::Application::getResources().loadSoundBuffer("jingle","assets/Sounds/jingleAtmog.wav");
+    ah::Application::getResources().loadShader("pixelate","assets/Shaders/pixelate.frag",sf::Shader::Fragment);
 
     ah::Application::getResources().getTexture("splash").setSmooth(true);
 

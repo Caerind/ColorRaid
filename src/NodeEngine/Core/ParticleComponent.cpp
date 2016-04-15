@@ -28,3 +28,8 @@ void NParticleComponent::disconnect()
 {
     mConnection.disconnect();
 }
+
+void NParticleComponent::onMovedThis()
+{
+    setParticlePosition(NVector::NToSFML2F(getFinalPosition()));
+}

@@ -13,13 +13,12 @@ class ParticleTestor : public NActor
     public:
         ParticleTestor();
 
-        void onMoved();
-
         void setParticleAngle(float angle);
 
     protected:
         NParticleComponent mComponent1;
         NParticleComponent mComponent2;
+        NSpriteComponent mComponent;
         float mParticleAngle;
 };
 

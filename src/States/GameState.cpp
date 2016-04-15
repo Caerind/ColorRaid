@@ -2,12 +2,18 @@
 #include "../NodeEngine/Core/World.hpp"
 #include <iostream>
 
+#include "../Pixelate.hpp"
+
 #include <Thor/Graphics.hpp>
 #include <Thor/Animations.hpp>
 
 GameState::GameState(ah::StateManager& manager)
 : ah::State(manager)
 {
+    NWorld::clear();
+
+    NWorld::setEffect(new Pixelate());
+
     NParticleSystem::Ptr pSys1 = NWorld::addParticleSystem("test1");
     pSys1->setTexture("particle");
     pSys1->setPosition(0,0,0);
@@ -73,12 +79,14 @@ bool GameState::update(sf::Time dt)
     NWorld::getWindow().setDebugInfo("Tickables",std::to_string(NWorld::getTickableCount()));
     NWorld::getWindow().setDebugInfo("Renderables",std::to_string(NWorld::getRenderableCount()));
     NWorld::getWindow().setDebugInfo("ParticlesSystems",std::to_string(NWorld::getParticleSystemCount()));
+    NWorld::getWindow().setDebugInfo("MX",std::to_string(NWorld::getPointerPositionView().x));
+    NWorld::getWindow().setDebugInfo("MY",std::to_string(NWorld::getPointerPositionView().y));
     return true;
 }
 
 void GameState::render(sf::RenderTarget& target, sf::RenderStates states)
 {
-    NWorld::render(target);
+    NWorld::render();
 }
 
 void GameState::onActivate()
