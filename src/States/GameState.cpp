@@ -14,11 +14,11 @@ GameState::GameState(ah::StateManager& manager)
 
     NWorld::setEffect(new Pixelate());
 
-    NParticleSystem::Ptr pSys1 = NWorld::addParticleSystem("test1");
+    NParticleSystem::Ptr pSys1 = NWorld::getParticleSystem("test1");
     pSys1->setTexture("particle");
     pSys1->setPosition(0,0,0);
 
-    NParticleSystem::Ptr pSys2 = NWorld::addParticleSystem("test2");
+    NParticleSystem::Ptr pSys2 = NWorld::getParticleSystem("test2");
     pSys2->setTexture("particle");
     pSys2->setPosition(0,0,-20);
     pSys2->addAffector(thor::ForceAffector(sf::Vector2f(0.f,100.f)));
@@ -64,7 +64,6 @@ bool GameState::handleEvent(sf::Event const& event)
 bool GameState::update(sf::Time dt)
 {
     NWorld::tick(dt);
-    NWorld::update();
 
     if (sf::Keyboard::isKeyPressed(Game::getActionKey("1")))
     {

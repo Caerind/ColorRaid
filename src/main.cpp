@@ -28,7 +28,8 @@ int main()
     ah::Application::getStates().registerState<GameState>();
     ah::Application::getStates().registerState<SettingsState>();
 
-    ah::Application::getStates().pushState<IntroState>();
+    //ah::Application::getStates().pushState<IntroState>();
+    ah::Application::getStates().pushState<GameState>();
 
     ah::Application::getAudio().playMusic("assets/Musics/theme.ogg",true);
 

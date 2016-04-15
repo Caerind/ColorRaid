@@ -1,4 +1,5 @@
 #include "Transformable.hpp"
+#include "World.hpp"
 
 NTransformable::NTransformable()
 {
@@ -21,6 +22,7 @@ void NTransformable::setPosition(sf::Vector2f const& position, float z)
     mTransformable.setPosition(position);
     mZ = z;
     onMoved();
+    NWorld::needUpdateOrder();
 }
 
 void NTransformable::setPosition(float x, float y, float z)
@@ -52,6 +54,7 @@ void NTransformable::setScale(sf::Vector2f const& scale)
 {
     mTransformable.setScale(scale);
     onScaled();
+    NWorld::needUpdateOrder();
 }
 
 void NTransformable::setScale(float x, float y)
@@ -68,6 +71,7 @@ void NTransformable::setRotation(float rotation)
 {
     mTransformable.setRotation(rotation);
     onRotated();
+    NWorld::needUpdateOrder();
 }
 
 sf::Transform NTransformable::getTransform() const

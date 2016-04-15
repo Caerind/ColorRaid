@@ -13,16 +13,10 @@ class NParticleSystem : public NSceneComponent, public thor::ParticleSystem
     public:
         NParticleSystem();
 
-        std::string getId() const;
-        void setId(std::string const& id);
-
         void setTexture(std::string const& id);
 
         virtual void tick(sf::Time dt);
         virtual void render(sf::RenderTarget& target);
-
-    protected:
-        std::string mId;
 };
 
 #endif // NPARTICLESYSTEM_HPP

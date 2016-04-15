@@ -45,105 +45,57 @@ bool NWorld::testAction(NAction const& action)
 
 void NWorld::tick(sf::Time dt)
 {
+    // Tickables
     for (auto itr = instance().mTickables.begin(); itr != instance().mTickables.end(); itr++)
     {
         (*itr)->tick(dt);
     }
 
+    // Timers
     for (auto itr = instance().mTimers.begin(); itr != instance().mTimers.end(); itr++)
     {
         itr->second.update(dt);
     }
+
+    // Events
+    instance().mEvents.clear();
+
+    // Actors
+    std::size_t s2, s1 = instance().mActorsDeletions.size();
+    for (std::size_t i = 0; i < s1; i++)
+    {
+        s2 = instance().mActors.size();
+        for (std::size_t j = 0; j < s2; j++)
+        {
+            if (instance().mActors[j]->getId() == instance().mActorsDeletions[i])
+            {
+                instance().mActors.erase(j);
+                break;
+            }
+        }
+    }
+    instance().mActorsDeletions.clear();
 }
 
 void NWorld::render()
 {
-    instance().mRenderables.sort([](NSceneComponent* a, NSceneComponent* b) -> bool
-    {
-       if (a != nullptr && b != nullptr)
-       {
-           if (a->getFinalZ() < b->getFinalZ())
-           {
-                return true;
-           }
-           else if (a->getFinalZ() > b->getFinalZ())
-           {
-               return false;
-           }
-           else
-           {
-               return (a->getFinalPosition().y < b->getFinalPosition().y);
-           }
-       }
-       return true;
-    });
-
-    if (instance().mEffect != nullptr)
-    {
-        sf::View old = instance().mSceneTexture.getView();
-        instance().mSceneTexture.setView(instance().mCameraManager.getActiveView());
-        for (auto itr = instance().mRenderables.begin(); itr != instance().mRenderables.end(); itr++)
-        {
-            (*itr)->render(instance().mSceneTexture);
-        }
-        instance().mSceneTexture.setView(old);
-        instance().mEffect->apply(instance().mSceneTexture,getWindow());
-    }
-    else
-    {
-        sf::View old = getWindow().getView();
-        getWindow().setView(instance().mCameraManager.getActiveView());
-        for (auto itr = instance().mRenderables.begin(); itr != instance().mRenderables.end(); itr++)
-        {
-            (*itr)->render(getWindow());
-        }
-        getWindow().setView(old);
-    }
-}
-
-void NWorld::update()
-{
-    // Events
-    instance().mEvents.clear();
-
-    // Renderables
-    for (std::size_t i = 0; i < instance().mRenderablesDeletions.size(); i++)
-    {
-        instance().mRenderables.remove(instance().mRenderablesDeletions[i]);
-    }
-    instance().mRenderablesDeletions.clear();
-
-    // Tickables
-    for (std::size_t i = 0; i < instance().mTickablesDeletions.size(); i++)
-    {
-        instance().mTickables.remove(instance().mTickablesDeletions[i]);
-    }
-    instance().mTickablesDeletions.clear();
+    instance().mGraphics.render(getWindow());
 }
 
 void NWorld::clear()
 {
-    instance().mParticleSystems.clear();
     instance().mEvents.clear();
     instance().mActors.clear();
     instance().mActorsDeletions.clear();
-    instance().mRenderables.clear();
-    instance().mRenderablesDeletions.clear();
     instance().mTickables.clear();
-    instance().mTickablesDeletions.clear();
     instance().mTimers.clear();
-    instance().mCameraManager.clear();
-    instance().mSceneTexture.create(getWindow().getSize().x, getWindow().getSize().y);
-    if (instance().mEffect != nullptr)
-    {
-        delete instance().mEffect;
-        instance().mEffect = nullptr;
-    }
+    instance().mGraphics.clear();
+    instance().mGraphics.updateRenderSize(getWindow().getSize());
 }
 
 NActor::Ptr NWorld::getActor(std::size_t index)
 {
-    if (index >= 0 && index < instance().mActors.size())
+    if (instance().mActors.validIndex(index))
     {
         return instance().mActors[index];
     }
@@ -163,15 +115,18 @@ NActor::Ptr NWorld::getActor(std::string const& id)
     return nullptr;
 }
 
+void NWorld::removeActor(std::size_t index)
+{
+    NActor::Ptr a = getActor(index);
+    if (a != nullptr)
+    {
+        instance().mActorsDeletions.add(a->getId());
+    }
+}
+
 void NWorld::removeActor(std::string const& id)
 {
-    for (std::size_t i = 0; i < instance().mActors.size(); i++)
-    {
-        if (instance().mActors[i]->getId() == id)
-        {
-            instance().mActors.erase(i);
-        }
-    }
+    instance().mActorsDeletions.add(id);
 }
 
 bool NWorld::load(std::string const& filename)
@@ -225,12 +180,12 @@ bool NWorld::save(std::string const& filename)
 
 NCameraManager& NWorld::getCameraManager()
 {
-    return instance().mCameraManager;
+    return instance().mGraphics.getCameraManager();
 }
 
 sf::View& NWorld::getActiveView()
 {
-    return instance().mCameraManager.getActiveView();
+    return instance().mGraphics.getCameraManager().getActiveView();
 }
 
 std::size_t NWorld::getActorCount()
@@ -240,7 +195,7 @@ std::size_t NWorld::getActorCount()
 
 std::size_t NWorld::getRenderableCount()
 {
-    return instance().mRenderables.size();
+    return instance().mGraphics.getRenderableCount();
 }
 
 std::size_t NWorld::getTickableCount()
@@ -255,7 +210,7 @@ NVector NWorld::getPointerPositionScreen(int touchIndex)
 
 NVector NWorld::getPointerPositionView(int touchIndex)
 {
-    return NVector::SFML2FToN(getWindow().getPointerPositionView(instance().getActiveView(),touchIndex));
+    return NVector::SFML2FToN(getWindow().getPointerPositionView(getActiveView(),touchIndex));
 }
 
 ah::ResourceManager& NWorld::getResources()
@@ -311,12 +266,12 @@ void NWorld::stopTimer(std::string const& handle)
 
 void NWorld::addRenderable(NSceneComponent* renderable)
 {
-    mRenderables.add(renderable);
+    mGraphics.addRenderable(renderable);
 }
 
 void NWorld::removeRenderable(NSceneComponent* renderable)
 {
-    mRenderablesDeletions.add(renderable);
+    mGraphics.removeRenderable(renderable);
 }
 
 void NWorld::addTickable(NTickable* tickable)
@@ -326,41 +281,32 @@ void NWorld::addTickable(NTickable* tickable)
 
 void NWorld::removeTickable(NTickable* tickable)
 {
-    mTickablesDeletions.add(tickable);
-}
-
-NParticleSystem::Ptr NWorld::addParticleSystem(std::string const& systemId)
-{
-    instance().mParticleSystems.emplace_back(std::make_shared<NParticleSystem>());
-    instance().mParticleSystems.back()->setId(systemId);
-    return instance().mParticleSystems.back();
+    mTickables.remove(tickable);
 }
 
 NParticleSystem::Ptr NWorld::getParticleSystem(std::string const& systemId)
 {
-    std::size_t s = instance().mParticleSystems.size();
-    for (std::size_t i = 0; i < s; i++)
-    {
-        if (instance().mParticleSystems[i]->getId() == systemId)
-        {
-            return instance().mParticleSystems[i];
-        }
-    }
-    return nullptr;
+    return instance().mGraphics.getParticleSystem(systemId);
+}
+
+void NWorld::removeParticleSystem(std::string const& systemId)
+{
+    instance().mGraphics.removeParticleSystem(systemId);
 }
 
 std::size_t NWorld::getParticleSystemCount()
 {
-    return instance().mParticleSystems.size();
+    return instance().mGraphics.getParticleSystemCount();
 }
 
 void NWorld::setEffect(NEffect* effect)
 {
-    if (NEffect::isSupported())
-    {
-        instance().mEffect = effect;
-        std::cout << "Effect supported" << std::endl;
-    }
+    instance().mGraphics.setEffect(effect);
+}
+
+void NWorld::needUpdateOrder()
+{
+    instance().mGraphics.needUpdateOrder();
 }
 
 NWorld::NWorld()
