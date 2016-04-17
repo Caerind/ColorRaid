@@ -220,7 +220,7 @@ SettingsState::SettingsState(ah::StateManager& manager)
     // End Key Binding
 
     // Begin Game Settings
-    mScale = sfg::Scale::Create(0.000f,0.004f,0.001f);
+    mScale = sfg::Scale::Create(0.0001f,0.002f,0.0002f);
     mScale->SetValue(Game::getPixelValue());
     mPixel = sfg::Label::Create("Pixel");
 

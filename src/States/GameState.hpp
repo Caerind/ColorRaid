@@ -9,6 +9,7 @@
 #include "../Mog.hpp"
 #include "../Pixelate.hpp"
 #include "../Map.hpp"
+#include "../Joystick.hpp"
 
 #include <iostream>
 
@@ -28,6 +29,14 @@ class GameState : public ah::State
     private:
         Jins::Ptr mJins;
         std::vector<Mog::Ptr> mMogs;
+
+        #ifdef N_MOBILE_PLATFORM
+        Joystick mJoystick;
+        sf::Sprite mButtons;
+        #endif // N_MOBILE_PLATFORM
+
+        sf::Sprite mLife;
+        sf::Sprite mLifeBar;
 
         sf::Time mSpawnTimer;
 };

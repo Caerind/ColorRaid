@@ -7,6 +7,6 @@ Jins::Jins()
 
     setType(Jins::Blue);
 
-    mLife = 500;
-    mLifeMax = 500;
+    mLife = 400;
+    mLifeMax = 400;
 }

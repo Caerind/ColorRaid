@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<Window>
+	<VerticalSync value="false" />
+	<Fullscreen value="false" />
+	<Resolution value="1024,768" />
+</Window>
+<Audio>
+	<Global value="29" />
+	<Music value="100" />
+	<Sound value="100" />
+</Audio>
+<KeyBinding>
+	<Key id="1" key="I" type="1" />
+	<Key id="2" key="O" type="1" />
+	<Key id="3" key="P" type="1" />
+	<Key id="action" key="Space" type="1" />
+	<Key id="down" key="S" type="0" />
+	<Key id="left" key="Q" type="0" />
+	<Key id="right" key="D" type="0" />
+	<Key id="up" key="Z" type="0" />
+</KeyBinding>

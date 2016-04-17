@@ -14,7 +14,7 @@ Game& Game::instance()
 
 std::string Game::getTitle()
 {
-    return "Test";
+    return "Color Raid";
 }
 
 std::string Game::getConfigFile()
@@ -81,18 +81,24 @@ void Game::setPixelValue(float v)
 
 Game::Game()
 {
-    mPixelValue = 0.f;
+    mPixelValue = 0.0001f;
 }
 
 Game::~Game()
 {
 }
 
-bool Game::load(std::string const& filename)
+bool Game::load()
 {
+    ah::Application::getWindow().load(Game::getConfigFile());
+    ah::Application::getAudio().load(Game::getConfigFile());
+    instance().mKeys.load(Game::getConfigFile());
     return false;
 }
 
-void Game::save(std::string const& filename)
+void Game::save()
 {
+    ah::Application::getWindow().save(Game::getConfigFile());
+    ah::Application::getAudio().save(Game::getConfigFile());
+    instance().mKeys.save(Game::getConfigFile());
 }

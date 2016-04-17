@@ -6,12 +6,10 @@ GameState::GameState(ah::StateManager& manager)
 {
     NWorld::clear();
 
-    NWorld::getWindow().setBackgroundColor(sf::Color::White);
-
     NWorld::setEffect(new Pixelate());
 
     mJins = NWorld::createActor<Jins>();
-    mJins->setPosition(400.f,300.f,0.f);
+    mJins->setPosition(NMath::random(100.f,1100.f),NMath::random(100.f,1100.f),0.f);
 
     NWorld::createActor<Map>();
 
@@ -23,6 +21,23 @@ GameState::GameState(ah::StateManager& manager)
 
     Game::resetGameDuration();
     Game::resetKilled();
+
+    #ifdef N_MOBILE_PLATFORM
+    mJoystick.setButtonTexture(NWorld::getResources().getTexture("joyButton"));
+    mJoystick.setBackgroundTexture(NWorld::getResources().getTexture("joyBackground"));
+    mJoystick.setPosition(sf::Vector2f(NWorld::getWindow().getSize().x - 150, NWorld::getWindow().getSize().y - 150));
+    mJoystick.setDeltaMax(50);
+
+    mButtons.setTexture(NWorld::getResources().getTexture("buttons"));
+    mButtons.setPosition(0.f, NWorld::getWindow().getSize().y - 200.f);
+    #endif // N_MOBILE_PLATFORM
+
+    mLife.setTexture(NWorld::getResources().getTexture("life"));
+    mLife.setTextureRect(sf::IntRect(0,0,200,26));
+    mLife.setPosition(NWorld::getWindow().getSize().x - 200,0);
+    mLifeBar.setTexture(NWorld::getResources().getTexture("life"));
+    mLifeBar.setTextureRect(sf::IntRect(0,26,200,26));
+    mLifeBar.setPosition(NWorld::getWindow().getSize().x - 200,0);
 }
 
 GameState::~GameState()
@@ -34,7 +49,7 @@ bool GameState::handleEvent(sf::Event const& event)
     if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)
     {
         requestClear();
-        requestPush("MenuState");
+        requestPush("EndState");
     }
 
     if (event.type == sf::Event::KeyPressed)
@@ -64,6 +79,49 @@ bool GameState::handleEvent(sf::Event const& event)
             }
         }
     }
+
+    #ifdef N_MOBILE_PLATFORM
+    mJoystick.handleEvent(event);
+
+    sf::FloatRect bR(0,NWorld::getWindow().getSize().y-200.f,250,200);
+    if ((event.type == sf::Event::TouchBegan && bR.contains(event.touch.x,event.touch.y))
+    || (event.type == sf::Event::MouseButtonPressed && bR.contains(event.mouseButton.x,event.mouseButton.y)))
+    {
+        #ifndef WINDOWS
+        sf::Vector2f p = sf::Vector2f(event.touch.x,event.touch.y);
+        #else
+        sf::Vector2f p = sf::Vector2f(event.mouseButton.x,event.mouseButton.y);
+        #endif // WINDOWS
+        sf::FloatRect a(0,NWorld::getWindow().getSize().y - 200.f +90,170,110);
+        sf::FloatRect u(36,NWorld::getWindow().getSize().y - 200.f +12,75,65);
+        sf::FloatRect d(150,NWorld::getWindow().getSize().y - 200.f +25,75,65);
+        sf::FloatRect t(175,NWorld::getWindow().getSize().y - 200.f +115,75,65);
+        if (a.contains(p))
+        {
+            for (std::size_t i = 0; i < mMogs.size(); i++)
+            {
+                NVector d = mJins->getPosition() - mMogs[i]->getPosition();
+                if (d.size2D() < 100.f)
+                {
+                    int damage = (mMogs[i]->getType() == mJins->getType()) ? Game::getGoodDamage() : Game::getBadDamage();
+                    mMogs[i]->setLife(mMogs[i]->getLife() - damage);
+                }
+            }
+        }
+        if (u.contains(p))
+        {
+            mJins->setType(Jins::Type::Blue);
+        }
+        if (d.contains(p))
+        {
+            mJins->setType(Jins::Type::Red);
+        }
+        if (t.contains(p))
+        {
+            mJins->setType(Jins::Type::Yellow);
+        }
+    }
+    #endif // N_MOBILE_PLATFORM
 
     return true;
 }
@@ -105,7 +163,7 @@ bool GameState::update(sf::Time dt)
         movement.x++;
     }
     #else
-    // TODO : Android Joystick
+    movement = mJoystick.getDelta();
     #endif // N_DESKTOP_PLATFORM
     movement *= dt.asSeconds() * 200.f;
     mJins->move(movement);
@@ -137,17 +195,17 @@ bool GameState::update(sf::Time dt)
         mMogs.push_back(NWorld::createActor<Mog>());
         mMogs.back()->setPosition(NMath::random(0.f,1216.f),NMath::random(0.f,1216.f),0.f);
         mMogs.back()->setJins(mJins);
-        NWorld::getWindow().setDebugInfo("moglife",std::to_string(mMogs.back()->getLife()));
         mSpawnTimer = sf::Time::Zero;
     }
-
-    NWorld::getWindow().setDebugInfo("life",std::to_string(mJins->getLife()));
 
     if (mJins->getLife() <= 0)
     {
         requestClear();
-        requestPush("MenuState");
+        requestPush("EndState");
     }
+
+
+    mLife.setTextureRect(sf::IntRect(0,0,200.f * ((float)mJins->getLife() / (float)mJins->getLifeMax()),26));
 
     return true;
 }
@@ -155,6 +213,14 @@ bool GameState::update(sf::Time dt)
 void GameState::render(sf::RenderTarget& target, sf::RenderStates states)
 {
     NWorld::render();
+
+    #ifdef N_MOBILE_PLATFORM
+    mJoystick.render(target,states);
+    target.draw(mButtons);
+    #endif // N_MOBILE_PLATFORM
+
+    target.draw(mLifeBar,states);
+    target.draw(mLife,states);
 }
 
 void GameState::onActivate()

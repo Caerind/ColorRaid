@@ -76,6 +76,7 @@ void Application::run()
 void Application::close()
 {
     instance().mRunning = false;
+    instance().mAudio.stop();
 }
 
 StateManager& Application::getStates()

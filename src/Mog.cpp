@@ -30,7 +30,7 @@ void Mog::tick(sf::Time dt)
         if (d.size2D() < 40.f && mLastHit.getElapsedTime() > sf::seconds(1.f))
         {
             mLastHit.restart();
-            mJins->setLife(mJins->getLife() - NMath::random(1,3));
+            mJins->setLife(mJins->getLife() - NMath::random(1,4));
         }
     }
     else

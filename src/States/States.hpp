@@ -5,5 +5,7 @@
 #include "IntroState.hpp"
 #include "MenuState.hpp"
 #include "SettingsState.hpp"
+#include "BeginState.hpp"
+#include "EndState.hpp"
 
 #endif // STATES_HPP_INCLUDED

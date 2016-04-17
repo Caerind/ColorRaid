@@ -35,8 +35,8 @@ class Game
         static sf::Time getGameDuration();
         static void resetGameDuration();
 
-		static bool load(std::string const& filename);
-		static void save(std::string const& filename);
+		static bool load();
+		static void save();
 
 		static float getPixelValue();
 		static void setPixelValue(float v);
