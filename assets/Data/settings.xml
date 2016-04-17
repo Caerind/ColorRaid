@@ -2,10 +2,10 @@
 <Window>
 	<VerticalSync value="false" />
 	<Fullscreen value="false" />
-	<Resolution value="1024,768" />
+	<Resolution value="800,600" />
 </Window>
 <Audio>
-	<Global value="29" />
+	<Global value="50" />
 	<Music value="100" />
 	<Sound value="100" />
 </Audio>
