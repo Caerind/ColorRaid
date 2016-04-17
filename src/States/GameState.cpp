@@ -1,45 +1,26 @@
 #include "GameState.hpp"
 #include "../NodeEngine/Core/World.hpp"
-#include <iostream>
-
-#include "../Pixelate.hpp"
-
-#include <Thor/Graphics.hpp>
-#include <Thor/Animations.hpp>
 
 GameState::GameState(ah::StateManager& manager)
 : ah::State(manager)
 {
     NWorld::clear();
 
-    NWorld::setEffect(new Pixelate());
+    NWorld::getWindow().setBackgroundColor(sf::Color::White);
 
-    NParticleSystem::Ptr pSys1 = NWorld::getParticleSystem("test1");
-    pSys1->setTexture("particle");
-    pSys1->setPosition(0,0,0);
+    mJins = NWorld::createActor<Jins>();
+    mJins->setPosition(400.f,300.f,0.f);
 
-    NParticleSystem::Ptr pSys2 = NWorld::getParticleSystem("test2");
-    pSys2->setTexture("particle");
-    pSys2->setPosition(0,0,-20);
-    pSys2->addAffector(thor::ForceAffector(sf::Vector2f(0.f,100.f)));
-	pSys2->addAffector(thor::TorqueAffector(100.f));
+    NWorld::createActor<Map>();
 
-	// Build color gradient (green -> teal -> blue)
-	thor::ColorGradient gradient;
-	gradient[0.f] = sf::Color(0, 150, 0);
-	gradient[0.5f] = sf::Color(0, 150, 100);
-	gradient[1.f] = sf::Color(0, 0, 150);
+    NParticleSystem::Ptr pSys = NWorld::getParticleSystem("p");
+    pSys->setTexture("particle");
+    pSys->setPosition(0.f,0.f,0.f);
+	pSys->addAffector(thor::TorqueAffector(300.f));
+    pSys->addAffector(thor::AnimationAffector(thor::FadeAnimation(0.1f, 0.1f)));
 
-	// Create color and fade in/out animations
-	thor::ColorAnimation colorizer(gradient);
-	thor::FadeAnimation fader(0.1f, 0.1f);
-
-	// Add particle affectors
-	pSys2->addAffector(thor::AnimationAffector(colorizer));
-	pSys2->addAffector(thor::AnimationAffector(fader));
-
-    mPlayer = NWorld::createActor<ParticleTestor>();
-    mPlayer->setPosition(NWorld::getActiveView().getCenter());
+    Game::resetGameDuration();
+    Game::resetKilled();
 }
 
 GameState::~GameState()
@@ -54,8 +35,32 @@ bool GameState::handleEvent(sf::Event const& event)
         requestPush("MenuState");
     }
 
-    if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)
+    if (event.type == sf::Event::KeyPressed)
     {
+        if (event.key.code == Game::getKeyBinding().getKey("1"))
+        {
+            mJins->setType(Jins::Type::Blue);
+        }
+        if (event.key.code == Game::getKeyBinding().getKey("2"))
+        {
+            mJins->setType(Jins::Type::Red);
+        }
+        if (event.key.code == Game::getKeyBinding().getKey("3"))
+        {
+            mJins->setType(Jins::Type::Yellow);
+        }
+        if (event.key.code == Game::getKeyBinding().getKey("action"))
+        {
+            for (std::size_t i = 0; i < mMogs.size(); i++)
+            {
+                NVector d = mJins->getPosition() - mMogs[i]->getPosition();
+                if (d.size2D() < 100.f)
+                {
+                    int damage = (mMogs[i]->getType() == mJins->getType()) ? Game::getGoodDamage() : Game::getBadDamage();
+                    mMogs[i]->setLife(mMogs[i]->getLife() - damage);
+                }
+            }
+        }
     }
 
     return true;
@@ -63,23 +68,85 @@ bool GameState::handleEvent(sf::Event const& event)
 
 bool GameState::update(sf::Time dt)
 {
+    for (std::size_t i = 0; i < mMogs.size();)
+    {
+        if (mMogs[i]->getLife() <= 0)
+        {
+            NWorld::removeActor(mMogs[i]->getId());
+            Game::addKilled();
+            mMogs.erase(mMogs.begin() + i);
+        }
+        else
+        {
+            i++;
+        }
+    }
+
     NWorld::tick(dt);
 
-    if (sf::Keyboard::isKeyPressed(Game::getKeyBinding().getKey("1")))
+    sf::Vector2f movement;
+    #ifdef N_DESKTOP_PLATFORM
+    if (sf::Keyboard::isKeyPressed(Game::getKeyBinding().getKey("up")))
     {
-        mPlayer->setParticleAngle(-200 * dt.asSeconds());
+        movement.y--;
     }
-    if (sf::Keyboard::isKeyPressed(Game::getKeyBinding().getKey("2")))
+    if (sf::Keyboard::isKeyPressed(Game::getKeyBinding().getKey("down")))
     {
-        mPlayer->setParticleAngle(200 * dt.asSeconds());
+        movement.y++;
+    }
+    if (sf::Keyboard::isKeyPressed(Game::getKeyBinding().getKey("left")))
+    {
+        movement.x--;
+    }
+    if (sf::Keyboard::isKeyPressed(Game::getKeyBinding().getKey("right")))
+    {
+        movement.x++;
+    }
+    #else
+    // TODO : Android Joystick
+    #endif // N_DESKTOP_PLATFORM
+    movement *= dt.asSeconds() * 200.f;
+    mJins->move(movement);
+    mJins->moving(movement != sf::Vector2f(0.f,0.f));
+
+    NVector p = mJins->getPosition();
+    if (p.x < 0.f)
+    {
+        mJins->setPosition(0,p.y,0.f);
+    }
+    if (p.x > 1216.f)
+    {
+        mJins->setPosition(1216.f,p.y,0.f);
+    }
+    p = mJins->getPosition();
+    if (p.y < 0.f)
+    {
+        mJins->setPosition(p.x,0.f,0.f);
+    }
+    if (p.y > 1216.f)
+    {
+        mJins->setPosition(p.x,1216.f,0.f);
     }
 
-    NWorld::getWindow().setDebugInfo("Actors",std::to_string(NWorld::getActorCount()));
-    NWorld::getWindow().setDebugInfo("Tickables",std::to_string(NWorld::getTickableCount()));
-    NWorld::getWindow().setDebugInfo("Renderables",std::to_string(NWorld::getRenderableCount()));
-    NWorld::getWindow().setDebugInfo("ParticlesSystems",std::to_string(NWorld::getParticleSystemCount()));
-    NWorld::getWindow().setDebugInfo("MX",std::to_string(NWorld::getPointerPositionView().x));
-    NWorld::getWindow().setDebugInfo("MY",std::to_string(NWorld::getPointerPositionView().y));
+    mSpawnTimer += dt;
+    float t = std::max(0.5f - 0.1f * (Game::getGameDuration().asSeconds() / 30.f),0.1f);
+    if (mSpawnTimer > sf::seconds(t))
+    {
+        mMogs.push_back(NWorld::createActor<Mog>());
+        mMogs.back()->setPosition(NMath::random(0.f,1216.f),NMath::random(0.f,1216.f),0.f);
+        mMogs.back()->setJins(mJins);
+        NWorld::getWindow().setDebugInfo("moglife",std::to_string(mMogs.back()->getLife()));
+        mSpawnTimer = sf::Time::Zero;
+    }
+
+    NWorld::getWindow().setDebugInfo("life",std::to_string(mJins->getLife()));
+
+    if (mJins->getLife() <= 0)
+    {
+        requestClear();
+        requestPush("MenuState");
+    }
+
     return true;
 }
 

@@ -130,27 +130,87 @@ SettingsState::SettingsState(ah::StateManager& manager)
     // End Graphics
 
     // Begin Key Binding
-    mKeyLeft = sfg::Button::Create(thor::toString(Game::getKeyBinding().getKey("1")));
-    mKeyLeft->GetSignal(sfg::Widget::OnLeftClick).Connect([&]()
+    mKeyUp = sfg::Button::Create(thor::toString(Game::getKeyBinding().getKey("up")));
+    mKeyUp->GetSignal(sfg::Widget::OnLeftClick).Connect([&]()
     {
         mKeySelected = 1;
     });
     auto h7 = sfg::Box::Create(sfg::Box::Orientation::HORIZONTAL, 5.f);
-    h7->Pack(sfg::Label::Create("Left"));
-    h7->Pack(mKeyLeft);
+    h7->Pack(sfg::Label::Create("Up"));
+    h7->Pack(mKeyUp);
 
-    mKeyRight = sfg::Button::Create(thor::toString(Game::getKeyBinding().getKey("2")));
-    mKeyRight->GetSignal(sfg::Widget::OnLeftClick).Connect([&]()
+    mKeyLeft = sfg::Button::Create(thor::toString(Game::getKeyBinding().getKey("left")));
+    mKeyLeft->GetSignal(sfg::Widget::OnLeftClick).Connect([&]()
     {
         mKeySelected = 2;
     });
     auto h8 = sfg::Box::Create(sfg::Box::Orientation::HORIZONTAL, 5.f);
-    h8->Pack(sfg::Label::Create("Right"));
-    h8->Pack(mKeyRight);
+    h8->Pack(sfg::Label::Create("Left"));
+    h8->Pack(mKeyLeft);
+
+    mKeyDown = sfg::Button::Create(thor::toString(Game::getKeyBinding().getKey("down")));
+    mKeyDown->GetSignal(sfg::Widget::OnLeftClick).Connect([&]()
+    {
+        mKeySelected = 3;
+    });
+    auto h9 = sfg::Box::Create(sfg::Box::Orientation::HORIZONTAL, 5.f);
+    h9->Pack(sfg::Label::Create("Down"));
+    h9->Pack(mKeyDown);
+
+    mKeyRight = sfg::Button::Create(thor::toString(Game::getKeyBinding().getKey("right")));
+    mKeyRight->GetSignal(sfg::Widget::OnLeftClick).Connect([&]()
+    {
+        mKeySelected = 4;
+    });
+    auto h10 = sfg::Box::Create(sfg::Box::Orientation::HORIZONTAL, 5.f);
+    h10->Pack(sfg::Label::Create("Right"));
+    h10->Pack(mKeyRight);
+
+    mKeyAction = sfg::Button::Create(thor::toString(Game::getKeyBinding().getKey("action")));
+    mKeyAction->GetSignal(sfg::Widget::OnLeftClick).Connect([&]()
+    {
+        mKeySelected = 5;
+    });
+    auto h11 = sfg::Box::Create(sfg::Box::Orientation::HORIZONTAL, 5.f);
+    h11->Pack(sfg::Label::Create("Action"));
+    h11->Pack(mKeyAction);
+
+    mKey1 = sfg::Button::Create(thor::toString(Game::getKeyBinding().getKey("1")));
+    mKey1->GetSignal(sfg::Widget::OnLeftClick).Connect([&]()
+    {
+        mKeySelected = 6;
+    });
+    auto h12 = sfg::Box::Create(sfg::Box::Orientation::HORIZONTAL, 5.f);
+    h12->Pack(sfg::Label::Create("1"));
+    h12->Pack(mKey1);
+
+    mKey2 = sfg::Button::Create(thor::toString(Game::getKeyBinding().getKey("2")));
+    mKey2->GetSignal(sfg::Widget::OnLeftClick).Connect([&]()
+    {
+        mKeySelected = 7;
+    });
+    auto h13 = sfg::Box::Create(sfg::Box::Orientation::HORIZONTAL, 5.f);
+    h13->Pack(sfg::Label::Create("2"));
+    h13->Pack(mKey2);
+
+    mKey3 = sfg::Button::Create(thor::toString(Game::getKeyBinding().getKey("3")));
+    mKey3->GetSignal(sfg::Widget::OnLeftClick).Connect([&]()
+    {
+        mKeySelected = 8;
+    });
+    auto h14 = sfg::Box::Create(sfg::Box::Orientation::HORIZONTAL, 5.f);
+    h14->Pack(sfg::Label::Create("3"));
+    h14->Pack(mKey3);
 
     auto c = sfg::Box::Create(sfg::Box::Orientation::VERTICAL, 5.f);
     c->Pack(h7);
     c->Pack(h8);
+    c->Pack(h9);
+    c->Pack(h10);
+    c->Pack(h11);
+    c->Pack(h12);
+    c->Pack(h13);
+    c->Pack(h14);
 
     auto frameB = sfg::Frame::Create("Key Binding");
     frameB->Add(c);
@@ -161,7 +221,7 @@ SettingsState::SettingsState(ah::StateManager& manager)
 
 
     // Begin Game Settings
-
+    /*
     // WRITE GAME SETTINGS GUI HERE
     auto d = sfg::Box::Create(sfg::Box::Orientation::VERTICAL, 5.f);
     //d->Pack(...);
@@ -172,7 +232,7 @@ SettingsState::SettingsState(ah::StateManager& manager)
     frameS->SetAlignment(sf::Vector2f(0.1f,0.f));
 
     box->Pack(frameS);
-
+    */
     // End Game Settings
 
     auto buttonQuit = sfg::Button::Create("Return");
@@ -189,7 +249,6 @@ SettingsState::SettingsState(ah::StateManager& manager)
     mWindow->Add(box);
     mWindow->SetPosition(sf::Vector2f(wSize.x / 2.f - mWindow->GetAllocation().width / 2.f, wSize.y / 2.f - mWindow->GetAllocation().height / 2.f));
 
-	//mDesktop.LoadThemeFromFile("Assets/Data/theme.css");
 	mDesktop.Add(mWindow);
 
 	mBackground.setTexture(ah::Application::getResources().getTexture("back"));
@@ -212,14 +271,50 @@ bool SettingsState::handleEvent(sf::Event const& event)
         {
             case 1:
             {
-                Game::getKeyBinding().setKey("1",event.key.code);
-                mKeyLeft->SetLabel(thor::toString(event.key.code));
+                Game::getKeyBinding().setKey("up",event.key.code);
+                mKeyUp->SetLabel(thor::toString(event.key.code));
             } break;
 
             case 2:
             {
-                Game::getKeyBinding().setKey("2",event.key.code);
+                Game::getKeyBinding().setKey("left",event.key.code);
+                mKeyLeft->SetLabel(thor::toString(event.key.code));
+            } break;
+
+            case 3:
+            {
+                Game::getKeyBinding().setKey("down",event.key.code);
+                mKeyDown->SetLabel(thor::toString(event.key.code));
+            } break;
+
+            case 4:
+            {
+                Game::getKeyBinding().setKey("right",event.key.code);
                 mKeyRight->SetLabel(thor::toString(event.key.code));
+            } break;
+
+            case 5:
+            {
+                Game::getKeyBinding().setKey("action",event.key.code);
+                mKeyAction->SetLabel(thor::toString(event.key.code));
+            } break;
+
+            case 6:
+            {
+                Game::getKeyBinding().setKey("1",event.key.code);
+                mKey1->SetLabel(thor::toString(event.key.code));
+            } break;
+
+            case 7:
+            {
+                Game::getKeyBinding().setKey("2",event.key.code);
+                mKey2->SetLabel(thor::toString(event.key.code));
+            } break;
+
+            case 8:
+            {
+                Game::getKeyBinding().setKey("3",event.key.code);
+                mKey3->SetLabel(thor::toString(event.key.code));
             } break;
 
             default: break;

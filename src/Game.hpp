@@ -21,6 +21,13 @@ class Game
         static std::string getTitle();
         static std::string getConfigFile();
 
+        static void resetKilled();
+        static void addKilled();
+        static int getKilled();
+
+        static int getGoodDamage();
+        static int getBadDamage();
+
         static void drawGui(sf::RenderWindow& window);
 
         static lp::KeyBinding& getKeyBinding();
@@ -42,6 +49,8 @@ class Game
         lp::KeyBinding mKeys;
 
         sf::Clock mGameDuration;
+
+        int mKilled;
 };
 
 #endif // GAME_HPP

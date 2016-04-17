@@ -12,8 +12,6 @@
 
 #include "../Game.hpp"
 
-//#include "../NodeEngine/Core/Action.hpp"
-
 class SettingsState : public ah::State
 {
     public:
@@ -42,8 +40,14 @@ class SettingsState : public ah::State
         sfg::CheckButton::Ptr mFullscreen;
 
         int mKeySelected;
-        sfg::Button::Ptr mKeyRight;
+        sfg::Button::Ptr mKeyUp;
         sfg::Button::Ptr mKeyLeft;
+        sfg::Button::Ptr mKeyDown;
+        sfg::Button::Ptr mKeyRight;
+        sfg::Button::Ptr mKeyAction;
+        sfg::Button::Ptr mKey1;
+        sfg::Button::Ptr mKey2;
+        sfg::Button::Ptr mKey3;
 
         sf::Sprite mBackground;
 };

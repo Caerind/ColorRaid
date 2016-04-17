@@ -5,7 +5,12 @@
 #include "../NodeEngine/Application/State.hpp"
 #include "States.hpp"
 
-#include "../ParticleTestor.hpp"
+#include "../Jins.hpp"
+#include "../Mog.hpp"
+#include "../Pixelate.hpp"
+#include "../Map.hpp"
+
+#include <iostream>
 
 class GameState : public ah::State
 {
@@ -21,7 +26,10 @@ class GameState : public ah::State
         void onDeactivate();
 
     private:
-        ParticleTestor::Ptr mPlayer;
+        Jins::Ptr mJins;
+        std::vector<Mog::Ptr> mMogs;
+
+        sf::Time mSpawnTimer;
 };
 
 #endif // GAMESTATE_HPP
