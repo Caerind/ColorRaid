@@ -55,7 +55,7 @@ int main()
 
     ah::Application::getAudio().playMusic("assets/Musics/theme.ogg",true);
 
-    NLog::setOnline("http://atmog.altervista.org/","Log/","Color Raid","0.1.2","None");
+    NLog::setOnline("http://atmog.altervista.org/","Log/","Color Raid","1.0.0","None");
 
     ah::Application::run();
 
