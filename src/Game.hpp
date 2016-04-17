@@ -38,6 +38,9 @@ class Game
 		static bool load(std::string const& filename);
 		static void save(std::string const& filename);
 
+		static float getPixelValue();
+		static void setPixelValue(float v);
+
     private:
         Game();
         ~Game();
@@ -51,6 +54,8 @@ class Game
         sf::Clock mGameDuration;
 
         int mKilled;
+
+        float mPixelValue;
 };
 
 #endif // GAME_HPP

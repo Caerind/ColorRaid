@@ -8,6 +8,8 @@ GameState::GameState(ah::StateManager& manager)
 
     NWorld::getWindow().setBackgroundColor(sf::Color::White);
 
+    NWorld::setEffect(new Pixelate());
+
     mJins = NWorld::createActor<Jins>();
     mJins->setPosition(400.f,300.f,0.f);
 

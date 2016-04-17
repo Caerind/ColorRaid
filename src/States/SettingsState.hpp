@@ -49,6 +49,9 @@ class SettingsState : public ah::State
         sfg::Button::Ptr mKey2;
         sfg::Button::Ptr mKey3;
 
+        sfg::Scale::Ptr mScale;
+        sfg::Label::Ptr mPixel;
+
         sf::Sprite mBackground;
 };
 

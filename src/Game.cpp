@@ -1,4 +1,5 @@
 #include "Game.hpp"
+#include "NodeEngine/Application/Application.hpp"
 
 Game* Game::mInstance = nullptr;
 
@@ -64,10 +65,23 @@ sf::Time Game::getGameDuration()
 void Game::resetGameDuration()
 {
     instance().mGameDuration.restart();
+    setPixelValue(instance().mPixelValue);
+}
+
+float Game::getPixelValue()
+{
+    return instance().mPixelValue;
+}
+
+void Game::setPixelValue(float v)
+{
+    instance().mPixelValue = v;
+    ah::Application::getResources().getShader("pixelate").setParameter("pixel_threshold",v);
 }
 
 Game::Game()
 {
+    mPixelValue = 0.f;
 }
 
 Game::~Game()

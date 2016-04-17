@@ -219,20 +219,23 @@ SettingsState::SettingsState(ah::StateManager& manager)
     box->Pack(frameB);
     // End Key Binding
 
-
     // Begin Game Settings
-    /*
-    // WRITE GAME SETTINGS GUI HERE
+    mScale = sfg::Scale::Create(0.000f,0.004f,0.001f);
+    mScale->SetValue(Game::getPixelValue());
+    mPixel = sfg::Label::Create("Pixel");
+
+    auto h15 = sfg::Box::Create(sfg::Box::Orientation::HORIZONTAL, 5.f);
+    h15->Pack(mPixel);
+    h15->Pack(mScale);
+
     auto d = sfg::Box::Create(sfg::Box::Orientation::VERTICAL, 5.f);
-    //d->Pack(...);
-    //d->Pack(...);
+    d->Pack(h15);
 
     auto frameS = sfg::Frame::Create("Game Settings");
     frameS->Add(d);
     frameS->SetAlignment(sf::Vector2f(0.1f,0.f));
 
     box->Pack(frameS);
-    */
     // End Game Settings
 
     auto buttonQuit = sfg::Button::Create("Return");
@@ -257,6 +260,7 @@ SettingsState::SettingsState(ah::StateManager& manager)
 
 SettingsState::~SettingsState()
 {
+    Game::setPixelValue(mScale->GetValue());
 }
 
 bool SettingsState::handleEvent(sf::Event const& event)
@@ -345,4 +349,5 @@ void SettingsState::onActivate()
 void SettingsState::onDeactivate()
 {
     ah::Application::getWindow().removeDebugInfo("VerticalSync");
+    Game::setPixelValue(mScale->GetValue());
 }
