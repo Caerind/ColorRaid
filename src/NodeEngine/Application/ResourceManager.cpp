@@ -71,7 +71,7 @@ sf::SoundBuffer& ResourceManager::getSoundBuffer(std::string const& id)
     return mSoundBuffers[id];
 }
 
-sf::Shader& ResourceManager::getShader(std::string const& id)
+lp::Shader& ResourceManager::getShader(std::string const& id)
 {
     if (mShaders.find(id) == mShaders.end())
     {

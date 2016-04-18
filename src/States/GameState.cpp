@@ -6,7 +6,7 @@ GameState::GameState(ah::StateManager& manager)
 {
     NWorld::clear();
 
-    NWorld::setEffect(new Pixelate());
+    NWorld::setEffect<Pixelate>();
 
     mJins = NWorld::createActor<Jins>();
     mJins->setPosition(NMath::random(100.f,1100.f),NMath::random(100.f,1100.f),0.f);
@@ -16,11 +16,11 @@ GameState::GameState(ah::StateManager& manager)
     NParticleSystem::Ptr pSys = NWorld::getParticleSystem("p");
     pSys->setTexture("particle");
     pSys->setPosition(0.f,0.f,0.f);
-	pSys->addAffector(thor::TorqueAffector(300.f));
-    pSys->addAffector(thor::AnimationAffector(thor::FadeAnimation(0.1f, 0.1f)));
+    // TODO : Affectors
+	//pSys->addAffector(thor::TorqueAffector(300.f));
+    //pSys->addAffector(thor::AnimationAffector(thor::FadeAnimation(0.1f, 0.1f)));
 
-    Game::resetGameDuration();
-    Game::resetKilled();
+    NWorld::getValues().setInt("killed",0);
 
     #ifdef N_MOBILE_PLATFORM
     mJoystick.setButtonTexture(NWorld::getResources().getTexture("joyButton"));
@@ -38,6 +38,16 @@ GameState::GameState(ah::StateManager& manager)
     mLifeBar.setTexture(NWorld::getResources().getTexture("life"));
     mLifeBar.setTextureRect(sf::IntRect(0,26,200,26));
     mLifeBar.setPosition(NWorld::getWindow().getSize().x - 200,0);
+
+    mDurationHandle = NWorld::startTimer();
+
+    std::string h = NWorld::setTimer(sf::seconds(0.25f),[&]()
+    {
+        mMogs.push_back(NWorld::createActor<Mog>((int)NWorld::getTimerElapsed(mDurationHandle).asSeconds()));
+        mMogs.back()->setPosition(NMath::random(0.f,1216.f),NMath::random(0.f,1216.f),0.f);
+        mMogs.back()->setJins(mJins);
+    });
+    NWorld::repeatTimer(h,true);
 }
 
 GameState::~GameState()
@@ -73,7 +83,7 @@ bool GameState::handleEvent(sf::Event const& event)
                 NVector d = mJins->getPosition() - mMogs[i]->getPosition();
                 if (d.size2D() < 100.f)
                 {
-                    int damage = (mMogs[i]->getType() == mJins->getType()) ? Game::getGoodDamage() : Game::getBadDamage();
+                    int damage = (mMogs[i]->getType() == mJins->getType()) ? 100 : 30;
                     mMogs[i]->setLife(mMogs[i]->getLife() - damage);
                 }
             }
@@ -133,7 +143,7 @@ bool GameState::update(sf::Time dt)
         if (mMogs[i]->getLife() <= 0)
         {
             NWorld::removeActor(mMogs[i]->getId());
-            Game::addKilled();
+            NWorld::getValues().setInt("killed",1 + NWorld::getValues().getInt("killed"));
             mMogs.erase(mMogs.begin() + i);
         }
         else
@@ -188,22 +198,13 @@ bool GameState::update(sf::Time dt)
         mJins->setPosition(p.x,1216.f,0.f);
     }
 
-    mSpawnTimer += dt;
-    float t = std::max(0.5f - 0.1f * (Game::getGameDuration().asSeconds() / 30.f),0.1f);
-    if (mSpawnTimer > sf::seconds(t))
-    {
-        mMogs.push_back(NWorld::createActor<Mog>());
-        mMogs.back()->setPosition(NMath::random(0.f,1216.f),NMath::random(0.f,1216.f),0.f);
-        mMogs.back()->setJins(mJins);
-        mSpawnTimer = sf::Time::Zero;
-    }
+    NWorld::getWindow().setDebugInfo("t",std::to_string(NWorld::getTimerElapsed(mDurationHandle).asSeconds()));
 
     if (mJins->getLife() <= 0)
     {
         requestClear();
         requestPush("EndState");
     }
-
 
     mLife.setTextureRect(sf::IntRect(0,0,200.f * ((float)mJins->getLife() / (float)mJins->getLifeMax()),26));
 

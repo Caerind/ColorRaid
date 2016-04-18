@@ -104,6 +104,11 @@ LangManager& Application::getLang()
     return instance().mLang;
 }
 
+ValueContainer& Application::getValues()
+{
+    return instance().mValues;
+}
+
 Application::Application()
 {
     mRunning = false;

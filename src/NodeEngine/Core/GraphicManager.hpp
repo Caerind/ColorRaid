@@ -37,7 +37,11 @@ class NGraphicManager
         void removeParticleSystem(std::string const& systemId);
         std::size_t getParticleSystemCount() const;
 
-        void setEffect(NEffect* effect);
+        template <typename T>
+        void setEffect();
+
+        template <typename T>
+        T* getEffect();
 
         void needUpdateOrder();
 
@@ -57,5 +61,17 @@ class NGraphicManager
         std::function<bool(NSceneComponent*,NSceneComponent*)> mRenderOrder;
         bool mNeedUpdateOrder;
 };
+
+template <typename T>
+void NGraphicManager::setEffect()
+{
+    mEffect = new T();
+}
+
+template <typename T>
+T* NGraphicManager::getEffect()
+{
+    return static_cast<T*>(mEffect);
+}
 
 #endif // NGRAPHICMANAGER_HPP

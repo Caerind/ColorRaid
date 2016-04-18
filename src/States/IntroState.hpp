@@ -8,8 +8,6 @@
 #include <SFML/System/Clock.hpp>
 #include <SFML/Graphics/Text.hpp>
 
-#include <Thor/Animations.hpp>
-
 class IntroState : public ah::State
 {
     public:
@@ -29,7 +27,6 @@ class IntroState : public ah::State
         sf::Sprite mBackground;
         sf::Text mAtmogText;
         sf::Text mAtmogShadow;
-        thor::Animator<sf::Sprite, std::string> mAnimator;
 };
 
 #endif // INTROSTATE_HPP

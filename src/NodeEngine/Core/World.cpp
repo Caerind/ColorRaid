@@ -223,14 +223,33 @@ ah::Window& NWorld::getWindow()
     return ah::Application::getWindow();
 }
 
+ah::ValueContainer& NWorld::getValues()
+{
+    return ah::Application::getValues();
+}
+
 std::string NWorld::setTimer(sf::Time duration, NTimer::Callback callback)
 {
-    static int x = 0;
-    x++;
-    std::string handle = std::to_string(x);
+    std::string handle = std::to_string(++instance().mTimerHandleCounter);
     instance().mTimers[handle].setCallback(callback);
     instance().mTimers[handle].reset(duration);
     return handle;
+}
+
+std::string NWorld::startTimer()
+{
+    std::string handle = std::to_string(++instance().mTimerHandleCounter);
+    instance().mTimers[handle].reset(sf::Time::Zero);
+    return handle;
+}
+
+sf::Time NWorld::getTimerElapsed(std::string const& handle)
+{
+    if (instance().mTimers.contains(handle))
+    {
+        return instance().mTimers[handle].getElapsedTime();
+    }
+    return sf::Time::Zero;
 }
 
 sf::Time NWorld::getTimerRemaining(std::string const& handle)
@@ -249,6 +268,30 @@ sf::Time NWorld::getTimerDuration(std::string const& handle)
         return instance().mTimers[handle].getDuration();
     }
     return sf::Time::Zero;
+}
+
+void NWorld::repeatTimer(std::string const& handle, bool repeat)
+{
+    if (instance().mTimers.contains(handle))
+    {
+        instance().mTimers[handle].setRepeat(repeat);
+    }
+}
+
+void NWorld::playTimer(std::string const& handle)
+{
+    if (instance().mTimers.contains(handle))
+    {
+        instance().mTimers[handle].play();
+    }
+}
+
+void NWorld::pauseTimer(std::string const& handle)
+{
+    if (instance().mTimers.contains(handle))
+    {
+        instance().mTimers[handle].pause();
+    }
 }
 
 void NWorld::resetTimer(std::string const& handle, sf::Time newDuration)
@@ -297,11 +340,6 @@ void NWorld::removeParticleSystem(std::string const& systemId)
 std::size_t NWorld::getParticleSystemCount()
 {
     return instance().mGraphics.getParticleSystemCount();
-}
-
-void NWorld::setEffect(NEffect* effect)
-{
-    instance().mGraphics.setEffect(effect);
 }
 
 void NWorld::needUpdateOrder()

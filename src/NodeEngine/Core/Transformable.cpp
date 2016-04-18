@@ -2,6 +2,8 @@
 #include "World.hpp"
 
 NTransformable::NTransformable()
+: mTransformable()
+, mZ(0.f)
 {
 }
 

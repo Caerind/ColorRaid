@@ -4,8 +4,9 @@
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/Image.hpp>
 #include <SFML/Graphics/Font.hpp>
-#include <SFML/Graphics/Shader.hpp>
 #include <SFML/Audio/SoundBuffer.hpp>
+
+#include "../Utils/Shader.hpp"
 
 #include <iostream>
 #include <cassert>
@@ -30,7 +31,7 @@ class ResourceManager
         sf::Image& getImage(std::string const& id);
         sf::Font& getFont(std::string const& id);
         sf::SoundBuffer& getSoundBuffer(std::string const& id);
-        sf::Shader& getShader(std::string const& id);
+        lp::Shader& getShader(std::string const& id);
 
         void releaseTexture(std::string const& id);
         void releaseImage(std::string const& id);
@@ -43,7 +44,7 @@ class ResourceManager
         std::map<std::string,sf::Image> mImages;
         std::map<std::string,sf::Font> mFonts;
         std::map<std::string,sf::SoundBuffer> mSoundBuffers;
-        std::map<std::string,sf::Shader> mShaders;
+        std::map<std::string,lp::Shader> mShaders;
 };
 
 template <typename Parameter>

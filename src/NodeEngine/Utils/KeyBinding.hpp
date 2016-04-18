@@ -1,38 +1,35 @@
 #ifndef LP_KEYBINDING_HPP
 #define LP_KEYBINDING_HPP
 
+#include <map>
 #include <cassert>
 #include <string>
 #include <fstream>
-#include <Thor/Input.hpp>
-#include "ActionTarget.hpp"
 #include "pugixml.hpp"
+
+#include <SFML/Window/Keyboard.hpp>
 
 namespace lp
 {
 
+std::string keyToString(sf::Keyboard::Key const& key);
+sf::Keyboard::Key stringToKey(std::string const& str);
+
 class KeyBinding
 {
     public:
-        KeyBinding(ActionMapPtr map = nullptr);
+        KeyBinding();
         ~KeyBinding();
 
-        void setAction(std::string const& id, sf::Keyboard::Key key, thor::Action::ActionType type);
         void setKey(std::string const& id, sf::Keyboard::Key key);
-        void setType(std::string const& id, thor::Action::ActionType type);
         sf::Keyboard::Key getKey(std::string const& id);
-        thor::Action::ActionType getType(std::string const& id);
-
-        thor::Action getActionFromId(std::string const& id);
-
-        ActionMapPtr getMap();
+        std::string getKeyString(std::string const& id);
 
         bool load(std::string const& filename);
         void save(std::string const& filename);
 
     protected:
-        ActionMapPtr mActionMap;
-        std::map<std::string,std::pair<sf::Keyboard::Key,thor::Action::ActionType>> mKeys;
+        std::map<std::string,sf::Keyboard::Key> mKeys;
 };
 
 } // namespace lp

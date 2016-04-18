@@ -1,5 +1,4 @@
 #include "BeginState.hpp"
-#include <Thor/Input.hpp>
 
 BeginState::BeginState(ah::StateManager& manager)
 : ah::State(manager)
@@ -16,13 +15,13 @@ BeginState::BeginState(ah::StateManager& manager)
 	mTut.setOrigin(sf::Vector2f(200,150));
 	mTut.setPosition(c);
 
-	std::string str = thor::toString(Game::getKeyBinding().getKey("up")) + ", " + thor::toString(Game::getKeyBinding().getKey("left")) + ", " + thor::toString(Game::getKeyBinding().getKey("down")) + ", " + thor::toString(Game::getKeyBinding().getKey("right"));
+	std::string str = Game::getKeyBinding().getKeyString("up") + ", " + Game::getKeyBinding().getKeyString("left") + ", " + Game::getKeyBinding().getKeyString("down") + ", " + Game::getKeyBinding().getKeyString("right");
 	mTexts.push_back(sf::Text(str,ah::Application::getResources().getFont("cool"),20));
 	mTexts.back().setPosition(c - mTut.getOrigin() + sf::Vector2f(150,25));
-	str = thor::toString(Game::getKeyBinding().getKey("action"));
+	str = Game::getKeyBinding().getKeyString("action");
 	mTexts.push_back(sf::Text(str,ah::Application::getResources().getFont("cool"),20));
 	mTexts.back().setPosition(c - mTut.getOrigin() + sf::Vector2f(165,80));
-	str = thor::toString(Game::getKeyBinding().getKey("1")) + ", " + thor::toString(Game::getKeyBinding().getKey("2")) + ", " + thor::toString(Game::getKeyBinding().getKey("3"));
+	str = Game::getKeyBinding().getKeyString("1") + ", " + Game::getKeyBinding().getKeyString("2") + ", " + Game::getKeyBinding().getKeyString("3");
 	mTexts.push_back(sf::Text(str,ah::Application::getResources().getFont("cool"),20));
 	mTexts.back().setPosition(c - mTut.getOrigin() + sf::Vector2f(165,140));
 	#else

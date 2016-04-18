@@ -69,10 +69,16 @@ class NWorld
 
         static ah::ResourceManager& getResources();
         static ah::Window& getWindow();
+        static ah::ValueContainer& getValues();
 
         static std::string setTimer(sf::Time duration, NTimer::Callback function = [](){});
+        static std::string startTimer();
+        static sf::Time getTimerElapsed(std::string const& handle);
         static sf::Time getTimerRemaining(std::string const& handle);
         static sf::Time getTimerDuration(std::string const& handle);
+        static void repeatTimer(std::string const& handle, bool repeat);
+        static void playTimer(std::string const& handle);
+        static void pauseTimer(std::string const& handle);
         static void resetTimer(std::string const& handle, sf::Time newDuration);
         static void stopTimer(std::string const& handle);
 
@@ -86,7 +92,11 @@ class NWorld
         static void removeParticleSystem(std::string const& systemId);
         static std::size_t getParticleSystemCount();
 
-        static void setEffect(NEffect* effect);
+        template <typename T>
+        static void setEffect();
+
+        template <typename T>
+        static T* getEffect();
 
         static void needUpdateOrder();
 
@@ -107,6 +117,7 @@ class NWorld
         NArray<NTickable*> mTickables;
 
         NMap<std::string,NTimer> mTimers;
+        int mTimerHandleCounter;
 
         NMap<std::string,std::function<NActor::Ptr()>> mActorFactory;
 };
@@ -135,6 +146,18 @@ bool NWorld::registerActor(std::string const& type)
 		return NActor::Ptr(new T());
 	};
 	return true;
+}
+
+template <typename T>
+void NWorld::setEffect()
+{
+    instance().mGraphics.setEffect<T>();
+}
+
+template <typename T>
+T* NWorld::getEffect()
+{
+    return instance().mGraphics.getEffect<T>();
 }
 
 #endif // NWORLD_HPP

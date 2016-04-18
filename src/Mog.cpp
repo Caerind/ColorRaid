@@ -1,12 +1,12 @@
 #include "Mog.hpp"
 #include "Game.hpp"
 
-Mog::Mog()
+Mog::Mog(int l)
 {
     mSprite.setTexture("mogs");
     setType(NMath::random(0,2));
 
-    mLifeMax = 100 + static_cast<int>(Game::getGameDuration().asSeconds());
+    mLifeMax = 100 + l;
     mLife = mLifeMax;
 
     mJins = nullptr;

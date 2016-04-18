@@ -22,13 +22,6 @@ IntroState::IntroState(ah::StateManager& manager)
     mAtmogShadow.setCharacterSize(mAtmogText.getCharacterSize());
     mAtmogShadow.setPosition(mAtmogText.getPosition() + sf::Vector2f(2.f * scale.x, 2.f * scale.y));
     mAtmogShadow.setColor(sf::Color::Black);
-
-    thor::FrameAnimation animation;
-    animation.addFrame(1.f,sf::IntRect(0,0,800,600));
-    animation.addFrame(1.f,sf::IntRect(800,0,800,600));
-    animation.addFrame(1.f,sf::IntRect(1600,0,800,600));
-    mAnimator.addAnimation("1", animation, mDuration);
-    mAnimator.playAnimation("1");
 }
 
 IntroState::~IntroState()
@@ -42,13 +35,23 @@ bool IntroState::handleEvent(sf::Event const& event)
 
 bool IntroState::update(sf::Time dt)
 {
+    if (mClock.getElapsedTime() < mDuration / 3.f)
+    {
+        mBackground.setTextureRect(sf::IntRect(0,0,800,600));
+    }
+    if (mClock.getElapsedTime() >= mDuration / 3.f && mClock.getElapsedTime() < 2.f * mDuration / 3.f)
+    {
+        mBackground.setTextureRect(sf::IntRect(800,0,800,600));
+    }
+    if (mClock.getElapsedTime() >= 2.f * mDuration / 3.f && mClock.getElapsedTime() < mDuration)
+    {
+        mBackground.setTextureRect(sf::IntRect(1600,0,800,600));
+    }
     if (mClock.getElapsedTime() >= mDuration)
     {
         requestClear();
         requestPush("MenuState");
     }
-    mAnimator.update(dt);
-    mAnimator.animate(mBackground);
     return true;
 }
 

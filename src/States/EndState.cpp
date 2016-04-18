@@ -17,10 +17,10 @@ EndState::EndState(ah::StateManager& manager)
 	mTut.setOrigin(sf::Vector2f(200,150));
 	mTut.setPosition(c);
 
-    mText = sf::Text(std::to_string(Game::getKilled()),ah::Application::getResources().getFont("cool"),45);
+    mText = sf::Text(ah::Application::getValues().getString("killed"),ah::Application::getResources().getFont("cool"),45);
     mText.setPosition(c - sf::Vector2f(mText.getGlobalBounds().width / 2,-20));
 
-    NLog::onlineLog("Game Played ! Score : " + std::to_string(Game::getKilled()));
+    NLog::onlineLog("Game Played ! Score : " + ah::Application::getValues().getString("killed"));
 }
 
 EndState::~EndState()

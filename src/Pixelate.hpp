@@ -9,6 +9,5 @@ class Pixelate : public NEffect
         Pixelate();
 
         void apply(sf::RenderTexture const& input, sf::RenderTarget& output);
-
 };
 #endif // PIXELATE_HPP

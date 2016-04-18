@@ -1,5 +1,8 @@
 #include "Joystick.hpp"
 
+namespace lp
+{
+
 Joystick::Joystick()
 {
     mHeld = false;
@@ -63,19 +66,17 @@ bool Joystick::contains(sf::Vector2f const& pos) const
     return Joystick::getBounds().contains(pos);
 }
 
-void Joystick::update(sf::Time dt)
-{
-}
-
 void Joystick::handleEvent(sf::Event const& event)
 {
-    #ifdef WINDOWS
-    if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left && Joystick::contains(sf::Vector2f(event.mouseButton.x,event.mouseButton.y)))
+    if ((event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left && Joystick::contains(sf::Vector2f(event.mouseButton.x,event.mouseButton.y)))
+	|| (event.type == sf::Event::TouchBegan && Joystick::contains(sf::Vector2f(event.touch.x,event.touch.y))))
     {
         mHeld = true;
+		mFingerId = event.touch.finger;
         mButton.setPosition(0,0);
     }
-    if (event.type == sf::Event::MouseButtonReleased)
+    if ((event.type == sf::Event::MouseButtonReleased) 
+	|| (event.type == sf::Event::TouchEnded && event.touch.finger == mFingerId))
     {
         mHeld = false;
         mButton.setPosition(0,0);
@@ -93,19 +94,7 @@ void Joystick::handleEvent(sf::Event const& event)
             mButton.setPosition(p);
         }
     }
-    #else
-    if (event.type == sf::Event::TouchBegan && Joystick::contains(sf::Vector2f(event.touch.x,event.touch.y)))
-    {
-        mHeld = true;
-        mFingerId = event.touch.finger;
-        mButton.setPosition(0,0);
-    }
-    if (event.type == sf::Event::TouchEnded && event.touch.finger == mFingerId)
-    {
-        mHeld = false;
-        mButton.setPosition(0,0);
-    }
-    if (event.type == sf::Event::TouchMoved && event.touch.finger == mFingerId && mHeld)
+	if (event.type == sf::Event::TouchMoved && event.touch.finger == mFingerId && mHeld)
     {
         sf::Vector2f p = sf::Vector2f(event.touch.x,event.touch.y) - getPosition();
         float r = std::sqrt(p.x*p.x + p.y*p.y);
@@ -118,7 +107,6 @@ void Joystick::handleEvent(sf::Event const& event)
             mButton.setPosition(p);
         }
     }
-    #endif
 }
 
 void Joystick::render(sf::RenderTarget& target, sf::RenderStates states)
@@ -127,3 +115,5 @@ void Joystick::render(sf::RenderTarget& target, sf::RenderStates states)
     target.draw(mBackground,states);
     target.draw(mButton,states);
 }
+
+} // namespace lp

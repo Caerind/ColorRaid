@@ -1,9 +1,7 @@
 #ifndef LP_ACTIONTARGET_HPP
 #define LP_ACTIONTARGET_HPP
 
-#include <Thor/Input/ActionMap.hpp>
-#include <Thor/Input/Connection.hpp>
-#include <Thor/Input/EventSystem.hpp>
+#include "../Thor/Input.hpp"
 
 #include <functional>
 #include <utility>

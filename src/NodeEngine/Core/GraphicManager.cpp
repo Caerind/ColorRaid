@@ -118,11 +118,6 @@ std::size_t NGraphicManager::getParticleSystemCount() const
     return mParticleSystems.size();
 }
 
-void NGraphicManager::setEffect(NEffect* effect)
-{
-    mEffect = effect;
-}
-
 void NGraphicManager::needUpdateOrder()
 {
     mNeedUpdateOrder = true;

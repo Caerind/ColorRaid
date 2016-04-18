@@ -9,7 +9,7 @@
 class Mog : public Entity
 {
     public:
-        Mog();
+        Mog(int l);
 
         typedef std::shared_ptr<Mog> Ptr;
 

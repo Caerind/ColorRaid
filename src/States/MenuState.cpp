@@ -68,7 +68,7 @@ MenuState::MenuState(ah::StateManager& manager)
 	mBackground.setTexture(ah::Application::getResources().getTexture("back"));
 
 	mTitleText.setFont(ah::Application::getResources().getFont("atmog"));
-    mTitleText.setString(Game::getTitle());
+    mTitleText.setString(ah::Application::getValues().getString("title"));
     mTitleText.setCharacterSize(static_cast<unsigned int>(80 * scale.y));
     #ifdef N_DESKTOP_PLATFORM
     mTitleText.setPosition(wSize.x * 0.5f - mTitleText.getGlobalBounds().width * 0.5f, 50.f * scale.y);

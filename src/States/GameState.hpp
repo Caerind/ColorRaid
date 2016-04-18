@@ -9,7 +9,7 @@
 #include "../Mog.hpp"
 #include "../Pixelate.hpp"
 #include "../Map.hpp"
-#include "../Joystick.hpp"
+#include "../NodeEngine/Utils/Joystick.hpp"
 
 #include <iostream>
 
@@ -39,6 +39,8 @@ class GameState : public ah::State
         sf::Sprite mLifeBar;
 
         sf::Time mSpawnTimer;
+
+        std::string mDurationHandle;
 };
 
 #endif // GAMESTATE_HPP
